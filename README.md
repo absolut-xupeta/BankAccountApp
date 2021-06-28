@@ -26,6 +26,7 @@ This is just a csv outline, the properties will be the headers and everything wi
 
 With each account, the account number will increase based on the previous.
 
+---
 - [ ] Derived classes *CurrentAccount* and *SavingsAccount*.
 
 Both classes will inherit from base *Account*.
