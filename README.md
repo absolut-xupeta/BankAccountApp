@@ -36,3 +36,6 @@ Both classes will inherit from base *Account*.
 - deposit() and withdraw() need to calculate the fees.
 - *CurrentAccount* extras:
 
+---
+- StartActivityForResult
+- Main screen button to see accounts.
