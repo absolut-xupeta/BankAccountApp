@@ -14,7 +14,8 @@ Implementation guideline:
 
 All proprerties are gonna be saved inside a .csv file inside the assets folder like:
 AccountNumber;Password;OwnerName;Balance;Currency;CreationDate;Account type
-0001         ;Pa$$20  ;John Doe ;00,00  ;BRL     ;28/06/2021  ;CurrentAccount
+
+0001---------;Pa$$20--;John Doe-;00,00--;BRL-----;28/06/2021--;CurrentAccount
 
 With each account, the account number will increase based on the previous.
 
