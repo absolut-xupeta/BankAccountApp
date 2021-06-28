@@ -13,9 +13,16 @@ Implementation guideline:
 - deposit(), withdraw()
 
 All proprerties are gonna be saved inside a .csv file inside the assets folder like:
-AccountNumber;Password;OwnerName;Balance;Currency;CreationDate;Account type
 
-0001---------;Pa$$20--;John Doe-;00,00--;BRL-----;28/06/2021--;CurrentAccount
+AccountNumber: 0001
+Password: Pa$$20
+OwnerName: John Doe
+Balance: 00,00
+Currency: BRL
+CreationDate: 28/06/202
+Account type: CurrentAccount
+
+This is just a csv outline, the properties will be the headers and everything will be divided by ";".
 
 With each account, the account number will increase based on the previous.
 
