@@ -7,7 +7,8 @@ Implementation guideline:
 
 - *Account* properties:
 - accountNumber: Int, password: String, ownerName: String, balance: Currency, creationDate: Date
-- Currency type will have: (amount: Int, currency: String) (Example: "BRL")
+- Currency type will have: (amount: Long, currency: String) (Example: "BRL")
+Currency amount will be in cents.
 
 - *Account* methods:
 - deposit(), withdraw()
