@@ -5,7 +5,7 @@
     <string name="login_button_label">Login</string>
     <string name="create_account_button_label">Create Account</string>
     <string name="name_text">Your Name</string>
-    <!--Only login scree-->
+    <!--Only login screen-->
     <string name="login_error">Wrong account number or password.</string>
     <string name="account_number_missing">Please insert your account number.</string>
     <string name="password_missing">Please insert your password.</string>
