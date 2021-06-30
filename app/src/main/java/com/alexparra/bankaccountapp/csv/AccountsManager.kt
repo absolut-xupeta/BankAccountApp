@@ -63,7 +63,7 @@ object AccountsManager {
         return null
     }
 
-    fun createAccount(context: Context) {
+    fun createAccount(context: Context, accountNumber: Int, name: String, password: String) {
         // Check if the clientList is initialized
         getAccountList(context)
 
@@ -71,6 +71,7 @@ object AccountsManager {
         val fileWriter = FileWriter(filePath, true)
         fileWriter.append("")
         fileWriter.close()
+        TODO()
     }
 
     fun updateUser(context: Context) {
