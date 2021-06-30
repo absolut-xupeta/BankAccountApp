@@ -6,29 +6,20 @@ class CurrentAccount(
     accountNumber: Int,
     password: String,
     ownerName: String,
+    creationDate: String,
+    balance: Long = 0L
 ) : Account(
     accountNumber,
     password,
-    ownerName
+    ownerName,
+    creationDate,
+    balance
 ) {
-    private var balance: Currency = Currency()
-    val creationDate: Date = Calendar.getInstance().time
-
-    override fun deposit(value: Long, currency: String?) {
-        //NumberFormat.getCurrencyInstance(Locale.CANADA).currency.numericCode
-        if (balance.currency == null) {
-            balance.let {
-                it.balance += value
-                it.currency = currency ?: "BRL"
-            }
-        } else {
-            balance.balance += value
-        }
+    override fun deposit(value: Long) {
+        balance += value
     }
 
     override fun withdraw(value: Long) {
-        balance.let {
-            it.balance += -(value)
-        }
+        balance += -(value)
     }
 }
