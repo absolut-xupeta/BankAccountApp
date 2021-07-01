@@ -6,7 +6,7 @@ class SavingsAccount(
     accountNumber: Int,
     password: String,
     ownerName: String,
-    creationDate: String,
+    creationDate: Date,
     balance: Long = 0L
 ) : Account(
     accountNumber,

@@ -20,8 +20,8 @@
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="teste"
-            android:textSize="30sp"/>
+            android:textSize="30sp"
+            android:hint="@string/name_text"/>
 
         <TextView
             android:id="@+id/accountType"
@@ -29,8 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
             android:gravity="center"
-            android:text="teste"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:hint="@string/current_account"/>
 
         <TextView
             android:id="@+id/currencyAmount"
@@ -38,11 +38,38 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="30dp"
-            android:text="R$ 01,00"
+            android:hint="@string/brl"
             android:textSize="42sp"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/bottomBar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:gravity="center"
+        android:layout_gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="5dp"
+            android:text="@string/creation_date"/>
+
+        <TextView
+            android:id="@+id/creationDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+
+    </LinearLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomBar"
         android:background="@color/gray_blue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -10,6 +10,8 @@ import android.widget.*
 import com.alexparra.bankaccountapp.csv.AccountsManager
 import com.alexparra.bankaccountapp.model.Account
 
+const val LOGGED_USER = "LOGGED_USER"
+
 class MainActivity : AppCompatActivity() {
     lateinit var loginButton: Button
     lateinit var accountNumberField: EditText
@@ -42,17 +44,20 @@ class MainActivity : AppCompatActivity() {
                 else -> {
                     changeButtonState(true)
 
-                    delay(1000) {
+                    AccountsManager.delay(1000) {
                         val loginResult = AccountsManager.authenticate(
                             accountNumberField.text.toString(),
-                            passwordField.text.toString()
+                            passwordField.text.toString(),
+                            this
                         )
 
                         if (loginResult != null) {
                             // Pass account to new screen, make it serializable.
-
-                            val intent = Intent(this, AccountScreenActivity::class.java) // use putExtra
+                            val intent = Intent(this, AccountScreenActivity::class.java).apply {
+                                putExtra(LOGGED_USER, loginResult)
+                            }
                             startActivity(intent)
+                            finish()
 
                         } else {
                             changeButtonState(false)
@@ -102,8 +107,4 @@ class MainActivity : AppCompatActivity() {
             mainWindowProgressBar.visibility = View.INVISIBLE
         }
     }
-}
-
-private fun delay(delay: Long = 1500, action: () -> Unit) {
-    Handler(Looper.getMainLooper()).postDelayed(action, delay)
 }

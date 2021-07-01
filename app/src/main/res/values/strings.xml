@@ -9,6 +9,26 @@
     <string name="login_error">Wrong account number or password.</string>
     <string name="account_number_missing">Please insert your account number.</string>
     <string name="password_missing">Please insert your password.</string>
-
     <string name="app_name">Bank Account App</string>
+    <!--Only create account screen-->
+    <string name="your_account_number">Your account number will be:</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="choose_account_type">Choose your account type</string>
+    <string name="field_warning">Please fill all the fields.</string>
+    <string name="radio_button_warning">Please select the account type.</string>
+    <string name="initial_deposit">Initial deposit: 0,00</string>
+    <string name="create_account_success">Account created successfully!</string>
+    <string name="something_went_wrong">Something went wrong while creating your account, contact the support.</string>
+    <!--Account type-->
+    <string name="savings_account">Savings Account</string>
+    <string name="current_account">Current Account</string>
+    <!--Money Code-->
+    <string name="brl">BRL</string>
+    <!--Only User Account screen-->
+    <string name="creation_date">Creation date:</string>
+    <!--Deposit Withdraw-->
+    <string name="amount">Amount</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="deposit">Deposit</string>
+    <string name="amount_warning">Please inform the amount you want to</string>
 </resources>
