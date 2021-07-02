@@ -6,7 +6,6 @@ import android.widget.*
 import com.alexparra.bankaccountapp.csv.AccountsManager
 import java.util.*
 
-
 class CreateAccountActivity : AppCompatActivity() {
     lateinit var accountCreation: TextView
     lateinit var nameCreation: EditText

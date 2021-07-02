@@ -10,6 +10,7 @@
     <string name="account_number_missing">Please insert your account number.</string>
     <string name="password_missing">Please insert your password.</string>
     <string name="app_name">Bank Account App</string>
+
     <!--Only create account screen-->
     <string name="your_account_number">Your account number will be:</string>
     <string name="create_your_account">Create your account</string>
@@ -26,6 +27,10 @@
     <string name="brl">BRL</string>
     <!--Only User Account screen-->
     <string name="creation_date">Creation date:</string>
+    <string name="transfer_error">An error occurred while transferring, please try again later.</string>
+    <string name="withdraw_error">You dont have enough money to withdraw.</string>
+    <string name="deposit_complete">Deposit completed successfully!</string>
+    <string name="withdraw_complete">Withdraw completed successfully!</string>
     <!--Deposit Withdraw-->
     <string name="amount">Amount</string>
     <string name="withdraw">Withdraw</string>

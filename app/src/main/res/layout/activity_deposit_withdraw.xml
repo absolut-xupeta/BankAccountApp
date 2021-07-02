@@ -17,19 +17,19 @@
         android:gravity="center"
         android:layout_marginBottom="50dp"
         android:hint="@string/withdraw"
-        android:textSize="24sp"
-        />
+        android:textSize="24sp" />
 
     <EditText
         android:id="@+id/operationAmount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
-        android:hint="@string/amount"/>
+        android:inputType="number"
+        android:hint="@string/amount" />
 
     <Button
         android:id="@+id/confirmOperationButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

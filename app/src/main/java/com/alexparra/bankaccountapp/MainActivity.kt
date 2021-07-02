@@ -3,12 +3,9 @@ package com.alexparra.bankaccountapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.widget.*
 import com.alexparra.bankaccountapp.csv.AccountsManager
-import com.alexparra.bankaccountapp.model.Account
 
 const val LOGGED_USER = "LOGGED_USER"
 

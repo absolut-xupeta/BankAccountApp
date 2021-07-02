@@ -1,12 +1,16 @@
 package com.alexparra.bankaccountapp
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import com.alexparra.bankaccountapp.model.Account
+
+const val VALUE = "VALUE"
+const val OPERATION_TYPE = "OPERATION"
 
 class DepositWithdrawActivity : AppCompatActivity() {
     lateinit var header: TextView
@@ -28,14 +32,24 @@ class DepositWithdrawActivity : AppCompatActivity() {
         confirmOperationButton.text = operation
 
         // String for the amount = 0 warning.
-        val warning = "${R.string.amount_warning} $operation"
+        val warning = "${getString(R.string.amount_warning)} $operation"
 
+        // Discover the operation type to return.
+        val operationType = if (operation == "Withdraw") "Withdraw" else "Deposit"
+
+        // Button click.
         confirmOperationButton.setOnClickListener {
             if (operationAmount.text.toString() == "") {
                 Toast.makeText(this, warning, Toast.LENGTH_LONG).show()
+
             } else {
-                Toast.makeText(this, "done", Toast.LENGTH_LONG).show()
-                //TODO CREATE FILE UPDATER FOR THE AMOUNT
+                val intent = Intent().apply {
+                    putExtra(VALUE, operationAmount.text.toString())
+                    putExtra(OPERATION_TYPE, operationType)
+                }
+
+                setResult(Activity.RESULT_OK, intent)
+                finish()
             }
         }
     }

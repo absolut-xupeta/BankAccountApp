@@ -27,9 +27,6 @@ object AccountsManager {
 
             if (!filePath.exists()) createCsv(filePath)
 
-            // Get the locale date format.
-            val dateFormat = getDateInstance()
-
             // Read file to a buffer.
             val streamReader = FileReader(filePath)
             val bufferedReader = BufferedReader(streamReader)
@@ -104,9 +101,11 @@ object AccountsManager {
         return true
     }
 
-    fun updateUser(context: Context) {
+    fun updateUser(context: Context, user: Account) {
         // Check if the clientList is initialized
-        getAccountList(context)
+        getAccountList(context).let {
+
+        }
         TODO()
     }
 
@@ -125,10 +124,6 @@ object AccountsManager {
         }
 
         return (larger + 1).toString()
-    }
-
-    fun constructAccount() {
-        TODO()
     }
 
     fun delay(delay: Long = 1500, action: () -> Unit) {
