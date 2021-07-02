@@ -1,4 +1,4 @@
-package com.alexparra.bankaccountapp.csv
+package com.alexparra.bankaccountapp.objects
 
 import android.content.Context
 import android.os.Handler
@@ -6,12 +6,12 @@ import android.os.Looper
 import com.alexparra.bankaccountapp.model.Account
 import com.alexparra.bankaccountapp.model.CurrentAccount
 import com.alexparra.bankaccountapp.model.SavingsAccount
+import com.alexparra.bankaccountapp.objects.AccountsManager.toSHA256
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 import java.security.MessageDigest
-import java.text.DateFormat.getDateInstance
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -63,9 +63,15 @@ object AccountsManager {
         }
     }
 
-    fun authenticate(id: String, password: String, context: Context): Account? {
+    fun authenticate(id: String, password: String = "", context: Context, flag: Boolean = false): Account? {
         getAccountList(context).let { list ->
             list.forEach {
+                if (flag) {
+                    if (it.accountNumber.toString() == id) {
+                        return it
+                    }
+                }
+
                 if (it.accountNumber.toString() == id && it.password == password.toSHA256()) {
                     return it
                 }
@@ -84,14 +90,26 @@ object AccountsManager {
         balance: Long
     ): Boolean {
         // Check if the clientList is initialized
-        getAccountList(context).let {
+        getAccountList(context).let { list ->
+            list.forEach {
+                if (it.ownerName == ownerName) {
+                    if (it is CurrentAccount && type == "Current Account") {
+                        return false
+                    }
+
+                    if (it is SavingsAccount && type == "Savings Account") {
+                        return false
+                    }
+                }
+            }
+
             val filePath = File(context.cacheDir, file)
 
             val fileWriter = FileWriter(filePath, true)
             fileWriter.append("$accountNumber;$type;$ownerName;${password.toSHA256()};$creationDate;$balance\n")
             fileWriter.close()
 
-            it.add(
+            list.add(
                 when (type) {
                     SAVINGS -> SavingsAccount(accountNumber.toInt(), password, ownerName,toDate(creationDate.toLong()), balance)
                     else -> CurrentAccount(accountNumber.toInt(), password, ownerName, toDate(creationDate.toLong()), balance)
@@ -103,10 +121,27 @@ object AccountsManager {
 
     fun updateUser(context: Context, user: Account) {
         // Check if the clientList is initialized
-        getAccountList(context).let {
-
+        clientList?.forEach {
+            if (it.accountNumber == user.accountNumber) {
+                it.balance = user.balance
+            }
         }
-        TODO()
+        updateFile(context)
+    }
+
+    fun updateFile(context: Context) {
+        File(context.cacheDir, file).bufferedWriter().use { bw ->
+            bw.write("")
+            clientList?.forEach {
+                if (it is CurrentAccount) {
+                    bw.append("${it.accountNumber};Current Account;${it.ownerName};${it.password};${it.creationDate.time};${it.balance}\n")
+                } else {
+                    bw.append("${it.accountNumber};Savings Account;${it.ownerName};${it.password};${it.creationDate.time};${it.balance}\n")
+                }
+            }
+        }
+
+
     }
 
     fun generateAccountNumber(context: Context): String {

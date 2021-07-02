@@ -1,11 +1,13 @@
 package com.alexparra.bankaccountapp
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import com.alexparra.bankaccountapp.csv.AccountsManager
+import com.alexparra.bankaccountapp.objects.AccountsManager
 
 const val LOGGED_USER = "LOGGED_USER"
 
@@ -25,6 +27,18 @@ class MainActivity : AppCompatActivity() {
         passwordField = findViewById(R.id.passwordField)
         createAccountButton = findViewById(R.id.createAccountButton)
         mainWindowProgressBar = findViewById(R.id.mainWindowProgressBar)
+
+        // Check saved session.
+        val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
+        val savedAccountId = sharedPref.getString("accountNumber", "").toString()
+
+        if (savedAccountId.isNotBlank()) {
+            val savedAccount = AccountsManager.authenticate(id = savedAccountId, flag = true, context = this)
+            val intent = Intent(this, AccountScreenActivity::class.java).apply {
+                putExtra(LOGGED_USER, savedAccount)
+            }
+            startActivity(intent)
+        }
 
         loginButton.setOnClickListener {
             when {
@@ -53,6 +67,13 @@ class MainActivity : AppCompatActivity() {
                             val intent = Intent(this, AccountScreenActivity::class.java).apply {
                                 putExtra(LOGGED_USER, loginResult)
                             }
+
+
+                            this.getPreferences(Context.MODE_PRIVATE).edit().apply {
+                                putString("accountNumber", accountNumberField.text.toString())
+                                apply()
+                            }
+
                             startActivity(intent)
                             finish()
 
@@ -65,6 +86,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
         createAccountButton.setOnClickListener {
             changeButtonState(true)
 

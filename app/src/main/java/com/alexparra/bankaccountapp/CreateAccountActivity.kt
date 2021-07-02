@@ -3,7 +3,7 @@ package com.alexparra.bankaccountapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.*
-import com.alexparra.bankaccountapp.csv.AccountsManager
+import com.alexparra.bankaccountapp.objects.AccountsManager
 import java.util.*
 
 class CreateAccountActivity : AppCompatActivity() {
@@ -77,7 +77,7 @@ class CreateAccountActivity : AppCompatActivity() {
                         finish()
                     }
                 } else {
-                    Toast.makeText(this, R.string.something_went_wrong, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.same_account_type, Toast.LENGTH_LONG).show()
                     changeButtonState(false)
                 }
             }

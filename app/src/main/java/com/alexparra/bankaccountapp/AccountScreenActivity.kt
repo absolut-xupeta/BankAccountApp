@@ -1,6 +1,7 @@
 package com.alexparra.bankaccountapp
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.alexparra.bankaccountapp.model.Account
 import com.alexparra.bankaccountapp.model.CurrentAccount
+import com.alexparra.bankaccountapp.objects.AccountsManager
 import java.text.DateFormat.getDateInstance
 
 const val OPERATION = "OPERATION"
@@ -31,6 +33,7 @@ class AccountScreenActivity : AppCompatActivity() {
         }
     }
 
+    lateinit var logoutButton: TextView
     lateinit var bankUserName: TextView
     lateinit var accountType: TextView
     lateinit var currencyAmount: TextView
@@ -44,6 +47,7 @@ class AccountScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.account_screen)
 
+        logoutButton = findViewById(R.id.logoutButton)
         bankUserName = findViewById(R.id.bankUserName)
         accountType = findViewById(R.id.accountType)
         currencyAmount = findViewById(R.id.currencyAmount)
@@ -79,6 +83,14 @@ class AccountScreenActivity : AppCompatActivity() {
             val intent = createIntent(getString(R.string.deposit))
             resultValue.launch(intent)
         }
+
+        logoutButton.setOnClickListener {
+            this.getPreferences(Context.MODE_PRIVATE).edit().apply {
+                clear()
+                apply()
+            }
+            finish()
+        }
     }
 
     private fun createIntent(type: String): Intent {
@@ -99,6 +111,7 @@ class AccountScreenActivity : AppCompatActivity() {
             user.balance = user.balance.plus(newValue)
             Toast.makeText(this, R.string.deposit_complete, Toast.LENGTH_LONG).show()
             currencyAmount.text = getBalanceString(user)
+            AccountsManager.updateUser(this, user)
 
         } else {
             if (user.balance.minus(newValue) < 0) {
@@ -109,6 +122,7 @@ class AccountScreenActivity : AppCompatActivity() {
                 user.balance = user.balance.minus(newValue)
                 Toast.makeText(this, R.string.withdraw_complete, Toast.LENGTH_LONG).show()
                 currencyAmount.text = getBalanceString(user)
+                AccountsManager.updateUser(this, user)
             }
         }
     }

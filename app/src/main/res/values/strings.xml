@@ -19,13 +19,14 @@
     <string name="radio_button_warning">Please select the account type.</string>
     <string name="initial_deposit">Initial deposit: 0,00</string>
     <string name="create_account_success">Account created successfully!</string>
-    <string name="something_went_wrong">Something went wrong while creating your account, contact the support.</string>
+    <string name="same_account_type">You cannot have two of the same account type.</string>
     <!--Account type-->
     <string name="savings_account">Savings Account</string>
     <string name="current_account">Current Account</string>
     <!--Money Code-->
     <string name="brl">BRL</string>
     <!--Only User Account screen-->
+    <string name="log_out">Logout</string>
     <string name="creation_date">Creation date:</string>
     <string name="transfer_error">An error occurred while transferring, please try again later.</string>
     <string name="withdraw_error">You dont have enough money to withdraw.</string>
