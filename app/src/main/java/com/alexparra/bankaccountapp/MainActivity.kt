@@ -1,8 +1,6 @@
 package com.alexparra.bankaccountapp
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -12,11 +10,11 @@ import com.alexparra.bankaccountapp.objects.AccountsManager
 const val LOGGED_USER = "LOGGED_USER"
 
 class MainActivity : AppCompatActivity() {
-    lateinit var loginButton: Button
-    lateinit var accountNumberField: EditText
-    lateinit var passwordField: EditText
-    lateinit var createAccountButton: TextView
-    lateinit var mainWindowProgressBar: ProgressBar
+    private lateinit var loginButton: Button
+    private lateinit var accountNumberField: EditText
+    private lateinit var passwordField: EditText
+    private lateinit var createAccountButton: TextView
+    private lateinit var mainWindowProgressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,22 +26,29 @@ class MainActivity : AppCompatActivity() {
         createAccountButton = findViewById(R.id.createAccountButton)
         mainWindowProgressBar = findViewById(R.id.mainWindowProgressBar)
 
-        // Check saved session.
-        val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
-        val savedAccountId = sharedPref.getString("accountNumber", "").toString()
-
-        if (savedAccountId.isNotBlank()) {
-            val savedAccount = AccountsManager.authenticate(id = savedAccountId, flag = true, context = this)
-            val intent = Intent(this, AccountScreenActivity::class.java).apply {
-                putExtra(LOGGED_USER, savedAccount)
+        // Check current session.
+        val sessionUser = AccountsManager.checkSession()
+        if (sessionUser != null) {
+            val intent = Intent(MainApplication.applicationContext(), AccountScreenActivity::class.java).apply {
+                putExtra(LOGGED_USER, sessionUser)
             }
             startActivity(intent)
         }
 
+        initializeButtons()
+    }
+
+    private fun initializeButtons() {
+
+        // Button actions.
         loginButton.setOnClickListener {
             when {
                 accountNumberField.text.toString() == "" -> {
-                    Toast.makeText(this, getString(R.string.account_number_missing), Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        this,
+                        getString(R.string.account_number_missing),
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 }
 
@@ -68,11 +73,8 @@ class MainActivity : AppCompatActivity() {
                                 putExtra(LOGGED_USER, loginResult)
                             }
 
-
-                            this.getPreferences(Context.MODE_PRIVATE).edit().apply {
-                                putString("accountNumber", accountNumberField.text.toString())
-                                apply()
-                            }
+                            // Save current logged session.
+                            AccountsManager.saveSession(accountNumberField.text.toString())
 
                             startActivity(intent)
                             finish()
