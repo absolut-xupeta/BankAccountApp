@@ -27,6 +27,10 @@ class CreateAccountActivity : AppCompatActivity() {
         createAccountButton = findViewById(R.id.createAccountButton)
         initialDeposit = findViewById(R.id.initialDeposit)
 
+        initViews()
+    }
+
+    private fun initViews() {
         val id = AccountsManager.generateAccountNumber(this)
         accountCreation.text = id
 
@@ -83,6 +87,7 @@ class CreateAccountActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun changeButtonState(isLoading: Boolean) {
         if (isLoading) {
             createAccountButton.apply {
