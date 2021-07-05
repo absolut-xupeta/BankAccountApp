@@ -5,6 +5,7 @@
     <string name="login_button_label">Login</string>
     <string name="create_account_button_label">Create Account</string>
     <string name="name_text">Your Name</string>
+
     <!--Only login screen-->
     <string name="login_error">Wrong account number or password.</string>
     <string name="account_number_missing">Please insert your account number.</string>
@@ -20,11 +21,14 @@
     <string name="initial_deposit">Initial deposit: 0,00</string>
     <string name="create_account_success">Account created successfully!</string>
     <string name="same_account_type">You cannot have two of the same account type.</string>
+
     <!--Account type-->
     <string name="savings_account">Savings Account</string>
     <string name="current_account">Current Account</string>
+
     <!--Money Code-->
     <string name="brl">BRL</string>
+
     <!--Only User Account screen-->
     <string name="log_out">Logout</string>
     <string name="creation_date">Creation date:</string>
@@ -32,6 +36,7 @@
     <string name="withdraw_error">You dont have enough money to withdraw.</string>
     <string name="deposit_complete">Deposit completed successfully!</string>
     <string name="withdraw_complete">Withdraw completed successfully!</string>
+
     <!--Deposit Withdraw-->
     <string name="amount">Amount</string>
     <string name="withdraw">Withdraw</string>
