@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BankAccountApp">
         <activity android:name=".DepositWithdrawActivity"></activity>
-        <activity android:name=".CreateAccountActivity" />
+        <activity android:name=".CreateAccountFragment" />
         <activity android:name=".AccountScreenActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -25,6 +25,7 @@ class DepositWithdrawActivity : AppCompatActivity() {
         operationAmount = findViewById(R.id.operationAmount)
         confirmOperationButton = findViewById(R.id.confirmOperationButton)
 
+        // TODO REFACTOR THIS
         val operation = intent.getStringExtra(OPERATION)
 
         // Set text for the right operation.

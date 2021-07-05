@@ -1,12 +1,13 @@
 package com.alexparra.bankaccountapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.*
+import androidx.fragment.app.Fragment
 import com.alexparra.bankaccountapp.objects.AccountsManager
 import java.util.*
 
-class CreateAccountActivity : AppCompatActivity() {
+class CreateAccountFragment : Fragment(R.layout.fragment_create_account) {
     lateinit var accountCreation: TextView
     lateinit var nameCreation: EditText
     lateinit var passwordCreation: EditText
@@ -15,32 +16,33 @@ class CreateAccountActivity : AppCompatActivity() {
     lateinit var createAccountButton: Button
     lateinit var initialDeposit: EditText
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_account)
 
-        accountCreation = findViewById(R.id.accountCreation)
-        nameCreation = findViewById(R.id.nameCreation)
-        passwordCreation = findViewById(R.id.passwordCreation)
-        chooseSavings = findViewById(R.id.chooseSavings)
-        chooseCurrent = findViewById(R.id.chooseCurrent)
-        createAccountButton = findViewById(R.id.createAccountButton)
-        initialDeposit = findViewById(R.id.initialDeposit)
+        view.apply {
+            accountCreation = findViewById(R.id.accountCreation)
+            nameCreation = findViewById(R.id.nameCreation)
+            passwordCreation = findViewById(R.id.passwordCreation)
+            chooseSavings = findViewById(R.id.chooseSavings)
+            chooseCurrent = findViewById(R.id.chooseCurrent)
+            createAccountButton = findViewById(R.id.createAccountButton)
+            initialDeposit = findViewById(R.id.initialDeposit)
+        }
 
         initViews()
     }
 
     private fun initViews() {
-        val id = AccountsManager.generateAccountNumber(this)
+        val id = AccountsManager.generateAccountNumber(requireContext())
         accountCreation.text = id
 
         createAccountButton.setOnClickListener {
 
             if (nameCreation.text.toString() == "" || passwordCreation.text.toString() == "") {
-                Toast.makeText(this, R.string.field_warning, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.field_warning, Toast.LENGTH_SHORT).show()
 
             } else if (!chooseSavings.isChecked && !chooseCurrent.isChecked) {
-                Toast.makeText(this, R.string.radio_button_warning, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.radio_button_warning, Toast.LENGTH_SHORT).show()
 
             } else {
                 changeButtonState(true)
@@ -65,7 +67,7 @@ class CreateAccountActivity : AppCompatActivity() {
 
                 // Create the new user.
                 val result = AccountsManager.createAccount(
-                    this,
+                    requireContext(),
                     type,
                     id,
                     passwordCreation.text.toString(),
@@ -76,12 +78,13 @@ class CreateAccountActivity : AppCompatActivity() {
 
                 // Go back to the login screen.
                 if (result) {
-                    Toast.makeText(this, R.string.create_account_success, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.create_account_success, Toast.LENGTH_SHORT).show()
                     AccountsManager.delay {
-                        finish()
+                        // TODO
+                    // finish()
                     }
                 } else {
-                    Toast.makeText(this, R.string.same_account_type, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, R.string.same_account_type, Toast.LENGTH_LONG).show()
                     changeButtonState(false)
                 }
             }
