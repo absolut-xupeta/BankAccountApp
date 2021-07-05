@@ -3,27 +3,33 @@ package com.alexparra.bankaccountapp.objects
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import com.alexparra.bankaccountapp.MainApplication.Companion.applicationContext
 import com.alexparra.bankaccountapp.model.Account
 import com.alexparra.bankaccountapp.model.CurrentAccount
 import com.alexparra.bankaccountapp.model.SavingsAccount
-import com.alexparra.bankaccountapp.objects.AccountsManager.toSHA256
+import com.alexparra.bankaccountapp.utils.toSHA256
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
-import java.security.MessageDigest
 import java.util.*
 import kotlin.collections.ArrayList
 
 object AccountsManager {
+
     private var clientList: ArrayList<Account>? = null
-    private const val file = "login.csv"
+    private var savedAccountId = applicationContext().getSharedPreferences("session", Context.MODE_PRIVATE)
+
+    private const val FILE = "login.csv"
+    private const val SESSION = "session"
+
     const val SAVINGS = "Savings Account"
     const val CURRENT = "Current Account"
 
+
     private fun getAccountList(context: Context): ArrayList<Account> {
         return clientList ?: ArrayList<Account>().also { list ->
-            val filePath = File(context.cacheDir, file)
+            val filePath = File(context.cacheDir, FILE)
 
             if (!filePath.exists()) createCsv(filePath)
 
@@ -63,13 +69,16 @@ object AccountsManager {
         }
     }
 
-    fun authenticate(id: String, password: String = "", context: Context, flag: Boolean = false): Account? {
+    fun authenticate(
+        id: String,
+        password: String = "",
+        context: Context,
+        flag: Boolean = false
+    ): Account? {
         getAccountList(context).let { list ->
             list.forEach {
-                if (flag) {
-                    if (it.accountNumber.toString() == id) {
-                        return it
-                    }
+                if (flag && it.accountNumber.toString() == id) {
+                    return it
                 }
 
                 if (it.accountNumber.toString() == id && it.password == password.toSHA256()) {
@@ -103,7 +112,7 @@ object AccountsManager {
                 }
             }
 
-            val filePath = File(context.cacheDir, file)
+            val filePath = File(context.cacheDir, FILE)
 
             val fileWriter = FileWriter(filePath, true)
             fileWriter.append("$accountNumber;$type;$ownerName;${password.toSHA256()};$creationDate;$balance\n")
@@ -111,8 +120,20 @@ object AccountsManager {
 
             list.add(
                 when (type) {
-                    SAVINGS -> SavingsAccount(accountNumber.toInt(), password, ownerName,toDate(creationDate.toLong()), balance)
-                    else -> CurrentAccount(accountNumber.toInt(), password, ownerName, toDate(creationDate.toLong()), balance)
+                    SAVINGS -> SavingsAccount(
+                        accountNumber.toInt(),
+                        password,
+                        ownerName,
+                        toDate(creationDate.toLong()),
+                        balance
+                    )
+                    else -> CurrentAccount(
+                        accountNumber.toInt(),
+                        password,
+                        ownerName,
+                        toDate(creationDate.toLong()),
+                        balance
+                    )
                 }
             )
         }
@@ -130,7 +151,7 @@ object AccountsManager {
     }
 
     fun updateFile(context: Context) {
-        File(context.cacheDir, file).bufferedWriter().use { bw ->
+        File(context.cacheDir, FILE).bufferedWriter().use { bw ->
             bw.write("")
             clientList?.forEach {
                 if (it is CurrentAccount) {
@@ -140,8 +161,6 @@ object AccountsManager {
                 }
             }
         }
-
-
     }
 
     fun generateAccountNumber(context: Context): String {
@@ -161,16 +180,39 @@ object AccountsManager {
         return (larger + 1).toString()
     }
 
+
+    fun checkSession(): Account? {
+        if (savedAccountId.getString("accountNumber", "").toString().isNotBlank()) {
+            return authenticate(
+                id = savedAccountId.getString("accountNumber", "").toString(),
+                flag = true,
+                context = applicationContext()
+            )
+        }
+        return null
+    }
+
+    fun saveSession(id: String) {
+        savedAccountId.edit().apply {
+            putString("accountNumber", id)
+            apply()
+        }
+    }
+
+    fun clearSession() {
+        savedAccountId.edit().apply {
+            clear()
+            apply()
+        }
+    }
+
+
     fun delay(delay: Long = 1500, action: () -> Unit) {
         Handler(Looper.getMainLooper()).postDelayed(action, delay)
     }
 
-    private fun createCsv(path: File) = path.createNewFile()
 
-    private fun String.toSHA256(): String {
-        val messageDigest = MessageDigest.getInstance("SHA-256").digest(toByteArray())
-        return messageDigest.fold("", { str, it -> str + "%02x".format(it) })
-    }
+    private fun createCsv(path: File) = path.createNewFile()
 
     private fun toDate(epoch: Long): Date {
         return Date(epoch)
