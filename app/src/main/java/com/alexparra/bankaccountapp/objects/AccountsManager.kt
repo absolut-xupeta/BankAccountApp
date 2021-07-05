@@ -21,7 +21,6 @@ object AccountsManager {
     private var savedAccountId = applicationContext().getSharedPreferences("session", Context.MODE_PRIVATE)
 
     private const val FILE = "login.csv"
-    private const val SESSION = "session"
 
     const val SAVINGS = "Savings Account"
     const val CURRENT = "Current Account"
