@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.alexparra.bankaccountapp.model.Account
 import com.alexparra.bankaccountapp.model.CurrentAccount
 import com.alexparra.bankaccountapp.objects.AccountsManager
+import java.lang.Exception
 import java.text.DateFormat.getDateInstance
 
 const val OPERATION = "OPERATION"
@@ -57,7 +58,7 @@ class AccountScreenActivity : AppCompatActivity() {
 
 
         // Get Account object from MainActivity.
-        user = intent.getSerializableExtra(LOGGED_USER) as Account
+        user = intent.getSerializableExtra(LOGGED_USER) as Account? ?: throw Exception("Missing user object.")
 
         // Transform date.
         val date = user.creationDate
@@ -85,10 +86,7 @@ class AccountScreenActivity : AppCompatActivity() {
         }
 
         logoutButton.setOnClickListener {
-            this.getPreferences(Context.MODE_PRIVATE).edit().apply {
-                clear()
-                apply()
-            }
+            AccountsManager.clearSession()
             finish()
         }
     }
