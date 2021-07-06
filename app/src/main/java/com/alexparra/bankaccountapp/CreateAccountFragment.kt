@@ -1,109 +1,122 @@
 package com.alexparra.bankaccountapp
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import com.alexparra.bankaccountapp.databinding.FragmentAccountBinding
+import com.alexparra.bankaccountapp.databinding.FragmentCreateAccountBinding
 import com.alexparra.bankaccountapp.objects.AccountsManager
+import com.alexparra.bankaccountapp.utils.replaceFragment
 import java.util.*
 
-class CreateAccountFragment : Fragment(R.layout.fragment_create_account) {
-    lateinit var accountCreation: TextView
-    lateinit var nameCreation: EditText
-    lateinit var passwordCreation: EditText
-    lateinit var chooseSavings: RadioButton
-    lateinit var chooseCurrent: RadioButton
-    lateinit var createAccountButton: Button
-    lateinit var initialDeposit: EditText
+class CreateAccountFragment : Fragment() {
+
+    private lateinit var binding: FragmentCreateAccountBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentCreateAccountBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        view.apply {
-            accountCreation = findViewById(R.id.accountCreation)
-            nameCreation = findViewById(R.id.nameCreation)
-            passwordCreation = findViewById(R.id.passwordCreation)
-            chooseSavings = findViewById(R.id.chooseSavings)
-            chooseCurrent = findViewById(R.id.chooseCurrent)
-            createAccountButton = findViewById(R.id.createAccountButton)
-            initialDeposit = findViewById(R.id.initialDeposit)
-        }
 
         initViews()
     }
 
     private fun initViews() {
-        val id = AccountsManager.generateAccountNumber(requireContext())
-        accountCreation.text = id
+        binding.apply {
+            val id = AccountsManager.generateAccountNumber(requireContext())
+            accountCreation.text = id
 
-        createAccountButton.setOnClickListener {
+            createAccountButton.setOnClickListener {
 
-            if (nameCreation.text.toString() == "" || passwordCreation.text.toString() == "") {
-                Toast.makeText(context, R.string.field_warning, Toast.LENGTH_SHORT).show()
+                if (nameCreation.text.toString() == "" || passwordCreation.text.toString() == "") {
+                    Toast.makeText(context, R.string.field_warning, Toast.LENGTH_SHORT).show()
 
-            } else if (!chooseSavings.isChecked && !chooseCurrent.isChecked) {
-                Toast.makeText(context, R.string.radio_button_warning, Toast.LENGTH_SHORT).show()
+                } else if (!chooseSavings.isChecked && !chooseCurrent.isChecked) {
+                    Toast.makeText(context, R.string.radio_button_warning, Toast.LENGTH_SHORT).show()
 
-            } else {
-                changeButtonState(true)
-
-                // Check for the initial deposit
-                val balance: Long = if (initialDeposit.text.toString() == "") {
-                    0
                 } else {
-                    val value = initialDeposit.text.toString()
-                    value.toLong() * 100
-                }
+                    changeButtonState(true)
 
-                // Check the user account type
-                val type: String = if (chooseSavings.isChecked) {
-                    AccountsManager.SAVINGS
-                } else {
-                    AccountsManager.CURRENT
-                }
-
-                // Get the creation date.
-                val date = Calendar.getInstance().timeInMillis.toString()
-
-                // Create the new user.
-                val result = AccountsManager.createAccount(
-                    requireContext(),
-                    type,
-                    id,
-                    passwordCreation.text.toString(),
-                    nameCreation.text.toString(),
-                    date,
-                    balance,
-                )
-
-                // Go back to the login screen.
-                if (result) {
-                    Toast.makeText(context, R.string.create_account_success, Toast.LENGTH_SHORT).show()
-                    AccountsManager.delay {
-                        // TODO
-                    // finish()
+                    // Check for the initial deposit
+                    val balance: Long = if (initialDeposit.text.toString() == "") {
+                        0
+                    } else {
+                        val value = initialDeposit.text.toString()
+                        value.toLong() * 100
                     }
-                } else {
-                    Toast.makeText(context, R.string.same_account_type, Toast.LENGTH_LONG).show()
-                    changeButtonState(false)
+
+                    // Check the user account type
+                    val type: String = if (chooseSavings.isChecked) {
+                        AccountsManager.SAVINGS
+                    } else {
+                        AccountsManager.CURRENT
+                    }
+
+                    // Get the creation date.
+                    val date = Calendar.getInstance().timeInMillis.toString()
+
+                    // Create the new user.
+                    val result = AccountsManager.createAccount(
+                        requireContext(),
+                        type,
+                        id,
+                        passwordCreation.text.toString(),
+                        nameCreation.text.toString(),
+                        date,
+                        balance,
+                    )
+
+                    // Go back to the login screen.
+                    if (result) {
+                        Toast.makeText(context, R.string.create_account_success, Toast.LENGTH_SHORT).show()
+                        AccountsManager.delay {
+                            replaceFragment(LoginFragment.newInstance(), R.id.fragment_container_view)
+                        }
+                    } else {
+                        Toast.makeText(context, R.string.same_account_type, Toast.LENGTH_LONG).show()
+                        changeButtonState(false)
+                    }
                 }
             }
         }
     }
 
     private fun changeButtonState(isLoading: Boolean) {
-        if (isLoading) {
-            createAccountButton.apply {
-                alpha = 1F
-                isClickable = false
-                isFocusable = false
-            }
-        } else {
-            createAccountButton.apply {
-                alpha = 0.5F
-                isClickable = true
-                isFocusable = true
+        binding.apply {
+            if (isLoading) {
+                createAccountButton.apply {
+                    alpha = 1F
+                    isClickable = false
+                    isFocusable = false
+                }
+            } else {
+                createAccountButton.apply {
+                    alpha = 0.5F
+                    isClickable = true
+                    isFocusable = true
+                }
             }
         }
+    }
+
+    companion object {
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment using the provided parameters.
+         *
+         * @return A new instance of fragment CreateAccountFragment.
+         */
+        @JvmStatic
+        fun newInstance() = CreateAccountFragment()
     }
 }

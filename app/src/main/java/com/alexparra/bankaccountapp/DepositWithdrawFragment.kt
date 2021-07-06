@@ -1,59 +1,89 @@
 package com.alexparra.bankaccountapp
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
+import com.alexparra.bankaccountapp.databinding.FragmentAccountBinding
+import com.alexparra.bankaccountapp.databinding.FragmentDepositWithdrawBinding
+import com.alexparra.bankaccountapp.utils.TRANSACTION
+import com.alexparra.bankaccountapp.utils.popBackStack
 
 const val VALUE = "VALUE"
-const val OPERATION_TYPE = "OPERATION"
+const val OPERATION = "OPERATION"
 
-class DepositWithdrawActivity : Fragment(R.layout.fragment_deposit_withdraw) {
-    lateinit var header: TextView
-    lateinit var operationAmount: EditText
-    lateinit var confirmOperationButton: Button
+class DepositWithdrawFragment : Fragment() {
 
-    override fun onViewCreate(view: View, savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private lateinit var binding: FragmentDepositWithdrawBinding
 
-        view.apply {
-            header = findViewById(R.id.header)
-            operationAmount = findViewById(R.id.operationAmount)
-            confirmOperationButton = findViewById(R.id.confirmOperationButton)
+    private lateinit var operation: String
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentDepositWithdrawBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        arguments?.apply {
+            operation = getString(OPERATION) as String
         }
 
-        // TODO REFACTOR THIS
-        val operation = intent.getStringExtra(OPERATION)
 
-        // Set text for the right operation.
-        header.text = operation
-        confirmOperationButton.text = operation
+        binding.apply {
+            // Set text for the right operation.
+            header.text = operation
+            confirmOperationButton.text = operation
 
-        // String for the amount = 0 warning.
-        val warning = "${getString(R.string.amount_warning)} $operation"
+            // String for the amount = 0 warning.
+            val warning = "${getString(R.string.amount_warning)} $operation"
 
-        // Discover the operation type to return.
-        val operationType = if (operation == "Withdraw") "Withdraw" else "Deposit"
+            // Discover the operation type to return.
+            val operationType = if (operation == "Withdraw") "Withdraw" else "Deposit"
 
-        // Button click.
-        confirmOperationButton.setOnClickListener {
-            if (operationAmount.text.toString() == "") {
-                Toast.makeText(requireContext(), warning, Toast.LENGTH_LONG).show()
+            // Button click.
+            confirmOperationButton.setOnClickListener {
+                if (operationAmount.text.toString() == "") {
+                    Toast.makeText(requireContext(), warning, Toast.LENGTH_LONG).show()
 
-            } else {
-                val intent = Intent().apply {
-                    putExtra(VALUE, operationAmount.text.toString())
-                    putExtra(OPERATION_TYPE, operationType)
+                } else {
+                    setFragmentResult(
+                        TRANSACTION,
+                        bundleOf(VALUE to operationAmount.text.toString(), OPERATION to operationType)
+                    )
+
+                    popBackStack()
                 }
-
-                setResult(Activity.RESULT_OK, intent)
-                finish()
             }
         }
+    }
+
+    companion object {
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment using the provided parameters.
+         *
+         * @param operation The operation type the user will perform (Deposit or Withdraw).
+         * @return A new instance of fragment DepositWithDrawFragment.
+         */
+        @JvmStatic
+        fun newInstance(operation: String) =
+            DepositWithdrawFragment().apply {
+                arguments = Bundle().apply {
+                    putString(OPERATION, operation)
+                }
+            }
     }
 }
