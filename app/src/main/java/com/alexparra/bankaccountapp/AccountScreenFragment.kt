@@ -1,4 +1,4 @@
-package com.alexparra.bankaccountapp.utils
+package com.alexparra.bankaccountapp
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,6 +15,7 @@ import com.alexparra.bankaccountapp.databinding.FragmentLoginBinding
 import com.alexparra.bankaccountapp.model.Account
 import com.alexparra.bankaccountapp.model.CurrentAccount
 import com.alexparra.bankaccountapp.objects.AccountsManager
+import com.alexparra.bankaccountapp.utils.replaceFragment
 import java.lang.Exception
 import java.text.DateFormat
 

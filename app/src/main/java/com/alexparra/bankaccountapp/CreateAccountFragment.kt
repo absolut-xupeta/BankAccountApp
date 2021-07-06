@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import com.alexparra.bankaccountapp.databinding.FragmentAccountBinding
 import com.alexparra.bankaccountapp.databinding.FragmentCreateAccountBinding
 import com.alexparra.bankaccountapp.objects.AccountsManager
 import com.alexparra.bankaccountapp.utils.replaceFragment

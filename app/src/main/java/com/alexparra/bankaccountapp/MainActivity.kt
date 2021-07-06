@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import com.alexparra.bankaccountapp.objects.AccountsManager
-import com.alexparra.bankaccountapp.utils.AccountScreenFragment
 import com.alexparra.bankaccountapp.utils.replaceFragment
 
 

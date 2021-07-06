@@ -8,7 +8,6 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.alexparra.bankaccountapp.databinding.FragmentLoginBinding
 import com.alexparra.bankaccountapp.objects.AccountsManager
-import com.alexparra.bankaccountapp.utils.AccountScreenFragment
 import com.alexparra.bankaccountapp.utils.replaceFragment
 
 class LoginFragment : Fragment() {
