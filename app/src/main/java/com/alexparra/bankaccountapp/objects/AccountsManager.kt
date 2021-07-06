@@ -121,14 +121,14 @@ object AccountsManager {
                 when (type) {
                     SAVINGS -> SavingsAccount(
                         accountNumber.toInt(),
-                        password,
+                        password.toSHA256(),
                         ownerName,
                         toDate(creationDate.toLong()),
                         balance
                     )
                     else -> CurrentAccount(
                         accountNumber.toInt(),
-                        password,
+                        password.toSHA256(),
                         ownerName,
                         toDate(creationDate.toLong()),
                         balance
