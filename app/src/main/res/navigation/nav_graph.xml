@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainActivity">
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.alexparra.bankaccountapp.MainActivity"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_mainActivity_to_createAccountFragment"
+            app:destination="@id/createAccountFragment" />
+        <action
+            android:id="@+id/action_mainActivity_to_accountScreenFragment"
+            app:destination="@id/accountScreenFragment" />
+    </activity>
+    <fragment
+        android:id="@+id/createAccountFragment"
+        android:name="com.alexparra.bankaccountapp.CreateAccountFragment"
+        android:label="fragment_create_account"
+        tools:layout="@layout/fragment_create_account" />
+    <fragment
+        android:id="@+id/accountScreenFragment"
+        android:name="com.alexparra.bankaccountapp.AccountScreenFragment"
+        android:label="fragment_account"
+        tools:layout="@layout/fragment_account" >
+        <action
+            android:id="@+id/action_accountScreenFragment_to_depositWithdrawFragment"
+            app:destination="@id/depositWithdrawFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/depositWithdrawFragment"
+        android:name="com.alexparra.bankaccountapp.DepositWithdrawFragment"
+        android:label="fragment_deposit_withdraw"
+        tools:layout="@layout/fragment_deposit_withdraw" />
+</navigation>
