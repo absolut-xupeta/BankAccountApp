@@ -8,7 +8,7 @@
     android:paddingEnd="30dp"
     android:paddingStart="30dp"
     android:gravity="center"
-    tools:context=".DepositWithdrawActivity">
+    tools:context=".DepositWithdrawFragment">
 
     <TextView
         android:id="@+id/header"
