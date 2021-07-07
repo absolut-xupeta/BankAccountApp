@@ -4,19 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
-import com.alexparra.bankaccountapp.*
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.alexparra.bankaccountapp.databinding.FragmentAccountBinding
-import com.alexparra.bankaccountapp.databinding.FragmentLoginBinding
 import com.alexparra.bankaccountapp.model.Account
 import com.alexparra.bankaccountapp.model.CurrentAccount
 import com.alexparra.bankaccountapp.objects.AccountsManager
-import com.alexparra.bankaccountapp.utils.replaceFragment
-import java.lang.Exception
 import java.text.DateFormat
 
 const val USER = "USER"
@@ -24,7 +20,7 @@ const val TRANSACTION = "TRANSACTION"
 
 class AccountScreenFragment : Fragment() {
 
-    private lateinit var user: Account
+    private val args: AccountScreenFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentAccountBinding
 
@@ -40,10 +36,6 @@ class AccountScreenFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.apply {
-            user = getSerializable(USER) as Account? ?: throw Exception("Missing account object.")
-        }
-
         // Listen to the value returned by the DepositWithdrawFragment.
         setFragmentResultListener(TRANSACTION) { _, bundle ->
             val value = bundle.getString(VALUE) as String
@@ -57,33 +49,37 @@ class AccountScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Transform date.
-        val date = user.creationDate
+        val date = args.user.creationDate
         val dateFormat = DateFormat.getDateInstance()
         val finalDate = dateFormat.format(date)
 
         // Put the owner name to Camel Case.
-        val userFinalName = user.ownerName.split(' ')
+        val userFinalName = args.user.ownerName.split(' ')
             .joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() } }
 
         binding.apply {
             // Transform values to better visualization.
             bankUserName.text = userFinalName
-            accountType.text = if (user is CurrentAccount) "Current Account" else "Savings Account"
-            currencyAmount.text = getBalanceString(user)
+            accountType.text = if (args.user is CurrentAccount) "Current Account" else "Savings Account"
+            currencyAmount.text = getBalanceString(args.user)
             creationDate.text = finalDate.toString()
 
             // Button actions
             withdraw.setOnClickListener {
-                replaceFragment(DepositWithdrawFragment.newInstance("Withdraw"), R.id.fragment_container_view)
+                val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToDepositWithdrawFragment("Withdraw")
+                findNavController().navigate(action)
             }
 
             deposit.setOnClickListener {
-                replaceFragment(DepositWithdrawFragment.newInstance("Deposit"), R.id.fragment_container_view)
+                val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToDepositWithdrawFragment("Deposit")
+                findNavController().navigate(action)
             }
 
             logoutButton.setOnClickListener {
                 AccountsManager.clearSession()
-                replaceFragment(LoginFragment.newInstance(), R.id.fragment_container_view)
+
+                val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToLoginFragment()
+                findNavController().navigate(action)
             }
         }
     }
@@ -97,39 +93,22 @@ class AccountScreenFragment : Fragment() {
         val newValue = value * 100
 
         if (operationType == "Deposit") {
-            user.balance = user.balance.plus(newValue)
+            args.user.balance = args.user.balance.plus(newValue)
             Toast.makeText(context, R.string.deposit_complete, Toast.LENGTH_LONG).show()
-            binding.currencyAmount.text = getBalanceString(user)
-            AccountsManager.updateUser(requireContext(), user)
+            binding.currencyAmount.text = getBalanceString(args.user)
+            AccountsManager.updateUser(requireContext(), args.user)
 
         } else {
-            if (user.balance.minus(newValue) < 0) {
+            if (args.user.balance.minus(newValue) < 0) {
                 // ERROR
                 Toast.makeText(context, R.string.withdraw_error, Toast.LENGTH_LONG).show()
 
             } else {
-                user.balance = user.balance.minus(newValue)
+                args.user.balance = args.user.balance.minus(newValue)
                 Toast.makeText(context, R.string.withdraw_complete, Toast.LENGTH_LONG).show()
-                binding.currencyAmount.text = getBalanceString(user)
-                AccountsManager.updateUser(requireContext(), user)
+                binding.currencyAmount.text = getBalanceString(args.user)
+                AccountsManager.updateUser(requireContext(), args.user)
             }
         }
-    }
-
-        companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param user The user that logged in.
-         * @return A new instance of fragment Test1Fragment.
-         */
-        @JvmStatic
-        fun newInstance(user: Account) =
-            AccountScreenFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable(USER, user)
-                }
-            }
     }
 }

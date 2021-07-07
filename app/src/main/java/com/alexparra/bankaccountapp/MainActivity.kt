@@ -2,30 +2,29 @@ package com.alexparra.bankaccountapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import com.alexparra.bankaccountapp.objects.AccountsManager
-import com.alexparra.bankaccountapp.utils.replaceFragment
-
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Check current session.
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container_view) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        checkSession(navController)
+    }
+
+    private fun checkSession(navController: NavController) {
         val sessionUser = AccountsManager.checkSession()
 
         if (sessionUser != null) {
-            replaceFragment(AccountScreenFragment.newInstance(sessionUser), R.id.fragment_container_view)
+            val action = LoginFragmentDirections.actionLoginFragmentToAccountScreenFragment(sessionUser)
+            navController.navigate(action)
         } else {
-            // Check if there is no other screen instantiated.
-            if (savedInstanceState == null) {
-                supportFragmentManager.commit {
-                    setReorderingAllowed(true)
-                    add<LoginFragment>(R.id.fragment_container_view)
-                }
-            }
+            return
         }
     }
 }

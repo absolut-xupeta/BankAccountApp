@@ -6,13 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.alexparra.bankaccountapp.databinding.FragmentLoginBinding
 import com.alexparra.bankaccountapp.objects.AccountsManager
-import com.alexparra.bankaccountapp.utils.replaceFragment
 
 class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
+
+    private val navController: NavController by lazy {
+        findNavController()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,7 +68,13 @@ class LoginFragment : Fragment() {
                                 // Save the session for the newly logged user.
                                 AccountsManager.saveSession(accountNumberField.text.toString())
 
-                                replaceFragment(AccountScreenFragment.newInstance(loginResult), R.id.fragment_container_view, )
+                                // Clear text fields.
+                                binding.accountNumberField.text = null
+                                binding.passwordField.text = null
+
+                                // Create action to pass a value to the next fragment.
+                                val action = LoginFragmentDirections.actionLoginFragmentToAccountScreenFragment(loginResult)
+                                navController.navigate(action)
 
                             } else {
                                 changeButtonState(false)
@@ -78,7 +89,8 @@ class LoginFragment : Fragment() {
             createAccountButton.setOnClickListener {
                 changeButtonState(true)
 
-                replaceFragment(CreateAccountFragment.newInstance(), R.id.fragment_container_view)
+                val action = LoginFragmentDirections.actionLoginFragmentToCreateAccountFragment()
+                navController.navigate(action)
 
                 changeButtonState(false)
             }
@@ -116,16 +128,5 @@ class LoginFragment : Fragment() {
                 mainWindowProgressBar.visibility = View.INVISIBLE
             }
         }
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @return A new instance of fragment LoginFragment.
-         */
-        @JvmStatic
-        fun newInstance() = LoginFragment()
     }
 }

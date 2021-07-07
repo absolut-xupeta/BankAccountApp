@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.alexparra.bankaccountapp.databinding.FragmentCreateAccountBinding
 import com.alexparra.bankaccountapp.objects.AccountsManager
-import com.alexparra.bankaccountapp.utils.replaceFragment
 import java.util.*
 
 class CreateAccountFragment : Fragment() {
@@ -79,7 +79,7 @@ class CreateAccountFragment : Fragment() {
                     if (result) {
                         Toast.makeText(context, R.string.create_account_success, Toast.LENGTH_SHORT).show()
                         AccountsManager.delay {
-                            replaceFragment(LoginFragment.newInstance(), R.id.fragment_container_view)
+                            findNavController().popBackStack()
                         }
                     } else {
                         Toast.makeText(context, R.string.same_account_type, Toast.LENGTH_LONG).show()
@@ -106,16 +106,5 @@ class CreateAccountFragment : Fragment() {
                 }
             }
         }
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @return A new instance of fragment CreateAccountFragment.
-         */
-        @JvmStatic
-        fun newInstance() = CreateAccountFragment()
     }
 }
