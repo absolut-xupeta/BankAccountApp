@@ -34,12 +34,21 @@
     <string name="creation_date">Creation date:</string>
     <string name="transfer_error">An error occurred while transferring, please try again later.</string>
     <string name="withdraw_error">You dont have enough money to withdraw.</string>
+    <string name="transfer_enough_amount">You dont have enough money to transfer.</string>
     <string name="deposit_complete">Deposit completed successfully!</string>
     <string name="withdraw_complete">Withdraw completed successfully!</string>
+    <string name="transfer_complete">Transfer completed successfully!</string>
 
     <!--Deposit Withdraw-->
     <string name="amount">Amount</string>
     <string name="withdraw">Withdraw</string>
     <string name="deposit">Deposit</string>
     <string name="amount_warning">Please inform the amount you want to</string>
+
+    <!-- Transfer -->
+    <string name="transfer">Transfer</string>
+    <string name="account_to_transfer">Account number to transfer</string>
+    <string name="no_id_warning">No user account ID is provided for the transfer.</string>
+    <string name="transfer_amount_zero">Please provide an amount for the transfer.</string>
+    <string name="account_missing">This account ID doesnt exist.</string>
 </resources>

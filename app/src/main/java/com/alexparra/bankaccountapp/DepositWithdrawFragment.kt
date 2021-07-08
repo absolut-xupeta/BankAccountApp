@@ -50,11 +50,11 @@ class DepositWithdrawFragment : Fragment() {
                     Toast.makeText(requireContext(), warning, Toast.LENGTH_LONG).show()
 
                 } else {
+
                     setFragmentResult(
                         TRANSACTION,
                         bundleOf(VALUE to operationAmount.text.toString(), OPERATION to operationType)
                     )
-
                     findNavController().popBackStack()
                 }
             }

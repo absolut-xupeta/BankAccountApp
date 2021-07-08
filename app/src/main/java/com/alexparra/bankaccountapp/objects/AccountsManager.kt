@@ -3,7 +3,10 @@ package com.alexparra.bankaccountapp.objects
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.alexparra.bankaccountapp.MainApplication.Companion.applicationContext
+import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.model.Account
 import com.alexparra.bankaccountapp.model.CurrentAccount
 import com.alexparra.bankaccountapp.model.SavingsAccount
@@ -88,6 +91,13 @@ object AccountsManager {
         }
     }
 
+    fun searchUser(id: String): Boolean {
+            clientList?.forEach {
+               if (id == it.accountNumber.toString()) return true
+            }
+        return false
+    }
+
     fun createAccount(
         context: Context,
         type: String,
@@ -139,7 +149,60 @@ object AccountsManager {
         return true
     }
 
-    fun updateUser(context: Context, user: Account) {
+    fun updateBalance(userToTransfer: String?, user: Account, value: Long, operationType: String): Boolean {
+        val newValue = value * 100
+
+        when (operationType ) {
+            "Deposit" -> {
+                user.balance = user.balance.plus(newValue)
+                updateUser(applicationContext(), user)
+                return true
+            }
+
+            "Transfer" -> {
+                val receivingUser: Account? = userToTransfer?.let { retrieveUser(it) }
+
+                return if (user.balance.minus(newValue) < 0) {
+                    // ERROR
+                    false
+
+                } else {
+                    // Remove from the transferring user.
+                    user.balance = user.balance.minus(newValue)
+                    updateUser(applicationContext(), user)
+
+                    // Deposit on the receiving user.
+                    receivingUser?.balance = receivingUser?.balance?.plus(newValue) ?: throw Exception("A user is needed.")
+                    updateUser(applicationContext(), receivingUser)
+                    true
+                }
+            }
+
+            else -> {
+                return if (user.balance.minus(newValue) < 0) {
+                    // ERROR
+                    false
+
+                } else {
+                    user.balance = user.balance.minus(newValue)
+                    //binding.currencyAmount.text = getBalanceString(user)
+                    updateUser(applicationContext(), user)
+                    true
+                }
+            }
+        }
+    }
+
+    private fun retrieveUser(id: String): Account? {
+        clientList?.forEach {
+            if (id == it.accountNumber.toString()) {
+                return it
+            }
+        }
+        return null
+    }
+
+    private fun updateUser(context: Context, user: Account) {
         // Check if the clientList is initialized
         clientList?.forEach {
             if (it.accountNumber == user.accountNumber) {

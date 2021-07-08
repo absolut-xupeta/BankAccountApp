@@ -4,18 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.alexparra.bankaccountapp.MainApplication.Companion.applicationContext
 import com.alexparra.bankaccountapp.databinding.FragmentAccountBinding
 import com.alexparra.bankaccountapp.model.Account
 import com.alexparra.bankaccountapp.model.CurrentAccount
 import com.alexparra.bankaccountapp.objects.AccountsManager
 import java.text.DateFormat
 
-const val USER = "USER"
 const val TRANSACTION = "TRANSACTION"
 
 class AccountScreenFragment : Fragment() {
@@ -40,8 +42,37 @@ class AccountScreenFragment : Fragment() {
         setFragmentResultListener(TRANSACTION) { _, bundle ->
             val value = bundle.getString(VALUE) as String
             val operation = bundle.getString(OPERATION) as String
+            val id = bundle.getString(ID)
 
-            updateBalance(value.toLong(), operation)
+            val result = AccountsManager.updateBalance(id, args.user, value.toLong(), operation)
+
+            if (result) {
+                when (operation) {
+                    "Deposit" -> {
+                        Toast.makeText(context, R.string.deposit_complete, Toast.LENGTH_LONG).show()
+                        updateBalanceView(value, "Deposit")
+                    }
+
+                    "Withdraw" -> {
+                        Toast.makeText(context, R.string.withdraw_complete, Toast.LENGTH_LONG).show()
+                        updateBalanceView(value, "Withdraw")
+                    }
+
+                    else -> {
+                        Toast.makeText(context, R.string.transfer_complete, Toast.LENGTH_LONG).show()
+                        updateBalanceView(value, "Transfer")
+                    }
+                }
+
+            } else {
+                if (operation == "Withdraw") {
+                    Toast.makeText(context, R.string.withdraw_error, Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context, R.string.transfer_enough_amount, Toast.LENGTH_LONG).show()
+                }
+            }
+
+
         }
     }
 
@@ -61,7 +92,7 @@ class AccountScreenFragment : Fragment() {
             // Transform values to better visualization.
             bankUserName.text = userFinalName
             accountType.text = if (args.user is CurrentAccount) "Current Account" else "Savings Account"
-            currencyAmount.text = getBalanceString(args.user)
+            currencyAmount.text = getBalanceString(args.user.balance)
             creationDate.text = finalDate.toString()
 
             // Button actions
@@ -75,6 +106,15 @@ class AccountScreenFragment : Fragment() {
                 findNavController().navigate(action)
             }
 
+            transaction.setOnClickListener {
+                // TODO CREATE THE ACTION HERE
+            }
+
+            transfer.setOnClickListener {
+                val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToTransferFragment()
+                findNavController().navigate(action)
+            }
+
             logoutButton.setOnClickListener {
                 AccountsManager.clearSession()
 
@@ -84,31 +124,28 @@ class AccountScreenFragment : Fragment() {
         }
     }
 
-    private fun getBalanceString(user: Account?): String {
-        val transformBalance = user?.balance?.div(100).toString()
-        return "${getString(R.string.brl)} $transformBalance"
+    private fun getBalanceString(value: Long): String {
+        val newValue = value.div(100).toInt()
+        return transformToBalanceString(newValue)
     }
 
-    private fun updateBalance(value: Long, operationType: String) {
-        val newValue = value * 100
+    private fun transformToBalanceString(value: Int): String {
+        return "${getString(R.string.brl)} $value"
+    }
 
-        if (operationType == "Deposit") {
-            args.user.balance = args.user.balance.plus(newValue)
-            Toast.makeText(context, R.string.deposit_complete, Toast.LENGTH_LONG).show()
-            binding.currencyAmount.text = getBalanceString(args.user)
-            AccountsManager.updateUser(requireContext(), args.user)
+    private fun getBalanceInt(): Int {
+        return binding.currencyAmount.text.toString().filter { it.isDigit() }.toInt()
+    }
 
+    private fun updateBalanceView(amount: String, operation: String) {
+        val viewValue = getBalanceInt()
+
+        if (operation == "Deposit") {
+            val newValue = viewValue + amount.toInt()
+            binding.currencyAmount.text = transformToBalanceString(newValue)
         } else {
-            if (args.user.balance.minus(newValue) < 0) {
-                // ERROR
-                Toast.makeText(context, R.string.withdraw_error, Toast.LENGTH_LONG).show()
-
-            } else {
-                args.user.balance = args.user.balance.minus(newValue)
-                Toast.makeText(context, R.string.withdraw_complete, Toast.LENGTH_LONG).show()
-                binding.currencyAmount.text = getBalanceString(args.user)
-                AccountsManager.updateUser(requireContext(), args.user)
-            }
+            val newValue = viewValue - amount.toInt()
+            binding.currencyAmount.text = transformToBalanceString(newValue)
         }
     }
 }

@@ -42,6 +42,9 @@
         <action
             android:id="@+id/action_accountScreenFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_accountScreenFragment_to_transferFragment"
+            app:destination="@id/transferFragment" />
     </fragment>
 
     <fragment
@@ -53,4 +56,9 @@
             android:name="operation"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/transferFragment"
+        android:name="com.alexparra.bankaccountapp.TransferFragment"
+        android:label="fragment_transfer"
+        tools:layout="@layout/fragment_transfer" />
 </navigation>
