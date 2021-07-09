@@ -4,16 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
-import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.alexparra.bankaccountapp.MainApplication.Companion.applicationContext
 import com.alexparra.bankaccountapp.databinding.FragmentAccountBinding
-import com.alexparra.bankaccountapp.model.Account
 import com.alexparra.bankaccountapp.model.CurrentAccount
 import com.alexparra.bankaccountapp.objects.AccountsManager
 import java.text.DateFormat
@@ -79,6 +75,14 @@ class AccountScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initButtons()
+    }
+
+    /**
+     * Initialize this fragment buttons.
+     */
+    private fun initButtons() {
+
         // Transform date.
         val date = args.user.creationDate
         val dateFormat = DateFormat.getDateInstance()
@@ -107,7 +111,8 @@ class AccountScreenFragment : Fragment() {
             }
 
             transaction.setOnClickListener {
-                // TODO CREATE THE ACTION HERE
+                val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToTransactionFragment()
+                findNavController().navigate(action)
             }
 
             transfer.setOnClickListener {
@@ -124,19 +129,33 @@ class AccountScreenFragment : Fragment() {
         }
     }
 
+    /**
+     * Transform the Long value to a balance compatible Int and
+     * concat into a string to be displayed on a TextView.
+     */
     private fun getBalanceString(value: Long): String {
         val newValue = value.div(100).toInt()
         return transformToBalanceString(newValue)
     }
 
+    /**
+     * Return the concat text to be used on TextView.
+     */
     private fun transformToBalanceString(value: Int): String {
         return "${getString(R.string.brl)} $value"
     }
 
+    /**
+     * Transforms the current TextView value to an Int and return it.
+     */
     private fun getBalanceInt(): Int {
         return binding.currencyAmount.text.toString().filter { it.isDigit() }.toInt()
     }
 
+    /**
+     * Update the screen TextView balance display based on the last operation that
+     * take place with this account.
+     */
     private fun updateBalanceView(amount: String, operation: String) {
         val viewValue = getBalanceInt()
 

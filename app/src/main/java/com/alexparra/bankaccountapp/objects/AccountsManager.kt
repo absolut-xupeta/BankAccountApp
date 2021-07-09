@@ -3,10 +3,7 @@ package com.alexparra.bankaccountapp.objects
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.alexparra.bankaccountapp.MainApplication.Companion.applicationContext
-import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.model.Account
 import com.alexparra.bankaccountapp.model.CurrentAccount
 import com.alexparra.bankaccountapp.model.SavingsAccount
@@ -15,6 +12,7 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -28,7 +26,9 @@ object AccountsManager {
     const val SAVINGS = "Savings Account"
     const val CURRENT = "Current Account"
 
-
+    /**
+     * Get's the clientList if it is not null, if it is, returns the list as it is.
+     */
     private fun getAccountList(context: Context): ArrayList<Account> {
         return clientList ?: ArrayList<Account>().also { list ->
             val filePath = File(context.cacheDir, FILE)
@@ -71,6 +71,11 @@ object AccountsManager {
         }
     }
 
+    /**
+     * Returns the logged in user if the id and password are correct.
+     * Flag is used if the current authentication is for a session user,
+     * this returns automatically its password to authentication.
+     */
     fun authenticate(
         id: String,
         password: String = "",
@@ -91,6 +96,9 @@ object AccountsManager {
         }
     }
 
+    /**
+     * Search if the provided id exists in the clientList.
+     */
     fun searchUser(id: String): Boolean {
             clientList?.forEach {
                if (id == it.accountNumber.toString()) return true
@@ -98,6 +106,9 @@ object AccountsManager {
         return false
     }
 
+    /**
+     * Create a new Savings or Current account.
+     */
     fun createAccount(
         context: Context,
         type: String,
@@ -149,6 +160,9 @@ object AccountsManager {
         return true
     }
 
+    /**
+     * Update the balance for various types of operations.
+     */
     fun updateBalance(userToTransfer: String?, user: Account, value: Long, operationType: String): Boolean {
         val newValue = value * 100
 
@@ -167,12 +181,21 @@ object AccountsManager {
                     false
 
                 } else {
-                    // Remove from the transferring user.
+                    // Get transfer date.
+                    val date = toDate(Calendar.getInstance().timeInMillis)
+                    val formatter = SimpleDateFormat("dd/MM", Locale.getDefault())
+                    val finalDate = formatter.format(date)
+
+                    // Make transactions.
                     user.balance = user.balance.minus(newValue)
+                    receivingUser?.balance = receivingUser?.balance?.plus(newValue) ?: throw Exception("A user is needed.")
+
+                    // Transferring user.
+                    addTransaction(user.accountNumber.toString(), "Sent", receivingUser.ownerName, value, finalDate)
                     updateUser(applicationContext(), user)
 
-                    // Deposit on the receiving user.
-                    receivingUser?.balance = receivingUser?.balance?.plus(newValue) ?: throw Exception("A user is needed.")
+                    // Receiving user.
+                    addTransaction(receivingUser.accountNumber.toString(), "Received", user.ownerName, value, finalDate)
                     updateUser(applicationContext(), receivingUser)
                     true
                 }
@@ -193,6 +216,24 @@ object AccountsManager {
         }
     }
 
+    /**
+     * Add a transaction to the user transaction csv based on the transferType.
+     */
+    private fun addTransaction(id: String, transferType: String, name: String, amount: Long, date: String) {
+        // Get the unique csv file name.
+        val fileName = "$id.csv"
+        val filePath = File(applicationContext().cacheDir, fileName)
+
+        val fileWriter = FileWriter(filePath, true)
+
+        // Append the correct format for transactions.
+        fileWriter.append("$transferType;$name;$amount;$date\n")
+        fileWriter.close()
+    }
+
+    /**
+     * Retrieve the user, this is needed to authenticate
+     */
     private fun retrieveUser(id: String): Account? {
         clientList?.forEach {
             if (id == it.accountNumber.toString()) {
@@ -202,17 +243,25 @@ object AccountsManager {
         return null
     }
 
+    /**
+     * Update the user object inside the instantiated clientList and call the
+     * updateFile function so that the user .csv is up to date.
+     */
     private fun updateUser(context: Context, user: Account) {
         // Check if the clientList is initialized
         clientList?.forEach {
             if (it.accountNumber == user.accountNumber) {
                 it.balance = user.balance
+                return@forEach
             }
         }
         updateFile(context)
     }
 
-    fun updateFile(context: Context) {
+    /**
+     * Updated the file based on the current clientList.
+     */
+    private fun updateFile(context: Context) {
         File(context.cacheDir, FILE).bufferedWriter().use { bw ->
             bw.write("")
             clientList?.forEach {
@@ -225,6 +274,10 @@ object AccountsManager {
         }
     }
 
+    /**
+     * Searches for the biggest accountNumber and return the current accountNumber +1
+     * so that the new user can have an unique number.
+     */
     fun generateAccountNumber(context: Context): String {
         // Check if the clientList is initialized
         getAccountList(context)
@@ -242,7 +295,9 @@ object AccountsManager {
         return (larger + 1).toString()
     }
 
-
+    /**
+     * Check if there's a session already saved
+     */
     fun checkSession(): Account? {
         if (savedAccountId.getString("accountNumber", "").toString().isNotBlank()) {
             return authenticate(
@@ -254,6 +309,9 @@ object AccountsManager {
         return null
     }
 
+    /**
+     * Save the current session id.
+     */
     fun saveSession(id: String) {
         savedAccountId.edit().apply {
             putString("accountNumber", id)
@@ -261,6 +319,9 @@ object AccountsManager {
         }
     }
 
+    /**
+     * Clear all the session file.
+     */
     fun clearSession() {
         savedAccountId.edit().apply {
             clear()
@@ -268,14 +329,21 @@ object AccountsManager {
         }
     }
 
-
+    /**
+     * Delay function wrapper for better visual effects.
+     */
     fun delay(delay: Long = 1500, action: () -> Unit) {
         Handler(Looper.getMainLooper()).postDelayed(action, delay)
     }
 
-
+    /**
+     * Creates the user .csv.
+     */
     private fun createCsv(path: File) = path.createNewFile()
 
+    /**
+     * Transforms a Long number from Epoch and returns a valid Date.
+     */
     private fun toDate(epoch: Long): Date {
         return Date(epoch)
     }
