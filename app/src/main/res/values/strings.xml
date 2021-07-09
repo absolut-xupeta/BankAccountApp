@@ -51,6 +51,7 @@
     <string name="no_id_warning">No user account ID is provided for the transfer.</string>
     <string name="transfer_amount_zero">Please provide an amount for the transfer.</string>
     <string name="account_missing">This account ID doesnt exist.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Transaction -->
+    <string name="no_transaction">No transactions made yet.</string>
 </resources>
