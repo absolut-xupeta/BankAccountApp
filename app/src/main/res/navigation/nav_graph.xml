@@ -17,9 +17,7 @@
             app:destination="@id/createAccountFragment" />
         <action
             android:id="@+id/action_loginFragment_to_accountScreenFragment"
-            app:destination="@id/accountScreenFragment"
-            app:popUpTo="@+id/loginFragment"
-            app:popUpToInclusive="true"/>
+            app:destination="@id/accountScreenFragment" />
     </fragment>
 
     <fragment
@@ -39,9 +37,6 @@
         <argument
             android:name="user"
             app:argType="com.alexparra.bankaccountapp.model.Account" />
-        <action
-            android:id="@+id/action_accountScreenFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
         <action
             android:id="@+id/action_accountScreenFragment_to_transferFragment"
             app:destination="@id/transferFragment" />
@@ -68,5 +63,9 @@
         android:id="@+id/transactionFragment"
         android:name="com.alexparra.bankaccountapp.TransactionFragment"
         android:label="fragment_transaction"
-        tools:layout="@layout/fragment_transaction" />
+        tools:layout="@layout/fragment_transaction" >
+        <argument
+            android:name="id"
+            app:argType="string" />
+    </fragment>
 </navigation>
