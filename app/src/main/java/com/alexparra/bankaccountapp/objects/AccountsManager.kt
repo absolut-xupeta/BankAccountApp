@@ -27,6 +27,20 @@ object AccountsManager {
     const val CURRENT = "Current Account"
 
     /**
+     * Format money to 'R$'.
+     */
+    fun formatMoneyTransaction(value: Long): String {
+        return "R$%.2f".format(value/100f)
+    }
+
+    /**
+     * Format money to BRL.
+     */
+    fun formatMoneyBalance(value: Long): String {
+        return "BRL %.2f".format(value/100f)
+    }
+
+    /**
      * Get's the clientList if it is not null, if it is, returns the list as it is.
      */
     private fun getAccountList(context: Context): ArrayList<Account> {
@@ -72,7 +86,7 @@ object AccountsManager {
     }
 
     /**
-     * Returns the logged in user if the id and password are correct.
+     * Returns the logged user if the id and password are correct.
      * Flag is used if the current authentication is for a session user,
      * this returns automatically its password to authentication.
      */
@@ -221,15 +235,48 @@ object AccountsManager {
      */
     private fun addTransaction(id: String, transferType: String, name: String, amount: Long, date: String) {
         // Get the unique csv file name.
-        val fileName = "$id.csv"
-        val filePath = File(applicationContext().cacheDir, fileName)
+        val filePath = composeTransactionCsvPath(id)
+        val newAmount = amount * 100
 
         val fileWriter = FileWriter(filePath, true)
 
         // Append the correct format for transactions.
-        fileWriter.append("$transferType;$name;$amount;$date\n")
+        fileWriter.append("$transferType;$name;$newAmount;$date\n")
         fileWriter.close()
     }
+
+    /**
+     * Loads the transaction csv based on the user id.
+     */
+    fun loadAccountTransaction(id: String): ArrayList<String>? {
+        var transactionList = ArrayList<String>()
+
+        return transactionList.also { list ->
+            // Get the user specific transaction csv.
+            val filePath = composeTransactionCsvPath(id)
+
+            if (!filePath.exists()) {
+                return null
+            }
+
+            val fileReader = FileReader(filePath)
+            val bufferedReader = BufferedReader(fileReader)
+
+            var line: String
+
+            while (bufferedReader.ready()) {
+                line = bufferedReader.readLine()
+                list.add(line)
+            }
+            transactionList = list
+        }
+    }
+
+    private fun composeTransactionCsvPath(id: String): File {
+        val fileName = "$id.csv"
+        return File(applicationContext().cacheDir, fileName)
+    }
+
 
     /**
      * Retrieve the user, this is needed to authenticate
