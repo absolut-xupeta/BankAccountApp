@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import com.alexparra.bankaccountapp.databinding.FragmentAccountBinding
 import com.alexparra.bankaccountapp.model.CurrentAccount
 import com.alexparra.bankaccountapp.objects.AccountsManager
+import com.alexparra.bankaccountapp.objects.AccountsManager.formatMoneyBalance
 import java.text.DateFormat
 
 const val TRANSACTION = "TRANSACTION"
@@ -67,8 +68,6 @@ class AccountScreenFragment : Fragment() {
                     Toast.makeText(context, R.string.transfer_enough_amount, Toast.LENGTH_LONG).show()
                 }
             }
-
-
         }
     }
 
@@ -96,53 +95,44 @@ class AccountScreenFragment : Fragment() {
             // Transform values to better visualization.
             bankUserName.text = userFinalName
             accountType.text = if (args.user is CurrentAccount) "Current Account" else "Savings Account"
-            currencyAmount.text = getBalanceString(args.user.balance)
+            currencyAmount.text = formatMoneyBalance(args.user.balance)
             creationDate.text = finalDate.toString()
 
             // Button actions
             withdraw.setOnClickListener {
-                val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToDepositWithdrawFragment("Withdraw")
+                val action = AccountScreenFragmentDirections
+                    .actionAccountScreenFragmentToDepositWithdrawFragment("Withdraw")
+
                 findNavController().navigate(action)
             }
 
             deposit.setOnClickListener {
-                val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToDepositWithdrawFragment("Deposit")
+                val action = AccountScreenFragmentDirections
+                    .actionAccountScreenFragmentToDepositWithdrawFragment("Deposit")
+
                 findNavController().navigate(action)
             }
 
             transaction.setOnClickListener {
-                val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToTransactionFragment()
+                val action = AccountScreenFragmentDirections
+                    .actionAccountScreenFragmentToTransactionFragment(args.user.accountNumber.toString())
+
                 findNavController().navigate(action)
             }
 
             transfer.setOnClickListener {
-                val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToTransferFragment()
+                val action = AccountScreenFragmentDirections
+                    .actionAccountScreenFragmentToTransferFragment()
+
                 findNavController().navigate(action)
             }
 
             logoutButton.setOnClickListener {
                 AccountsManager.clearSession()
 
-                val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToLoginFragment()
-                findNavController().navigate(action)
+                findNavController().popBackStack()
             }
         }
-    }
-
-    /**
-     * Transform the Long value to a balance compatible Int and
-     * concat into a string to be displayed on a TextView.
-     */
-    private fun getBalanceString(value: Long): String {
-        val newValue = value.div(100).toInt()
-        return transformToBalanceString(newValue)
-    }
-
-    /**
-     * Return the concat text to be used on TextView.
-     */
-    private fun transformToBalanceString(value: Int): String {
-        return "${getString(R.string.brl)} $value"
     }
 
     /**
@@ -160,11 +150,11 @@ class AccountScreenFragment : Fragment() {
         val viewValue = getBalanceInt()
 
         if (operation == "Deposit") {
-            val newValue = viewValue + amount.toInt()
-            binding.currencyAmount.text = transformToBalanceString(newValue)
+            val newValue = viewValue + amount.toLong()
+            binding.currencyAmount.text = formatMoneyBalance(newValue)
         } else {
-            val newValue = viewValue - amount.toInt()
-            binding.currencyAmount.text = transformToBalanceString(newValue)
+            val newValue = viewValue - amount.toLong()
+            binding.currencyAmount.text = formatMoneyBalance(newValue)
         }
     }
 }
