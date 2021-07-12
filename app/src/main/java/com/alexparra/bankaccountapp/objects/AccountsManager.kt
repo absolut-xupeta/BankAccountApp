@@ -34,10 +34,10 @@ object AccountsManager {
     }
 
     /**
-     * Format money to BRL.
+     * Format money.
      */
     fun formatMoneyBalance(value: Long): String {
-        return "BRL %.2f".format(value/100f)
+        return "%.2f".format(value/100f)
     }
 
     /**
