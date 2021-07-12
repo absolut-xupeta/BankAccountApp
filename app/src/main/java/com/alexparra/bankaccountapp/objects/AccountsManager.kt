@@ -86,41 +86,6 @@ object AccountsManager {
     }
 
     /**
-     * Returns the logged user if the id and password are correct.
-     * Flag is used if the current authentication is for a session user,
-     * this returns automatically its password to authentication.
-     */
-    fun authenticate(
-        id: String,
-        password: String = "",
-        context: Context,
-        flag: Boolean = false
-    ): Account? {
-        getAccountList(context).let { list ->
-            list.forEach {
-                if (flag && it.accountNumber.toString() == id) {
-                    return it
-                }
-
-                if (it.accountNumber.toString() == id && it.password == password.toSHA256()) {
-                    return it
-                }
-            }
-            return null
-        }
-    }
-
-    /**
-     * Search if the provided id exists in the clientList.
-     */
-    fun searchUser(id: String): Boolean {
-            clientList?.forEach {
-               if (id == it.accountNumber.toString()) return true
-            }
-        return false
-    }
-
-    /**
      * Create a new Savings or Current account.
      */
     fun createAccount(
@@ -175,6 +140,42 @@ object AccountsManager {
     }
 
     /**
+     * Returns the logged user if the id and password are correct.
+     * Flag is used if the current authentication is for a session user,
+     * this returns automatically its password to authentication.
+     */
+    fun authenticate(
+        id: String,
+        password: String = "",
+        context: Context,
+        flag: Boolean = false
+    ): Account? {
+        getAccountList(context).let { list ->
+            list.forEach {
+                if (flag && it.accountNumber.toString() == id) {
+                    return it
+                }
+
+                if (it.accountNumber.toString() == id && it.password == password.toSHA256()) {
+                    return it
+                }
+            }
+            return null
+        }
+    }
+
+    /**
+     * Search if the provided id exists in the clientList.
+     */
+    fun searchUser(id: String): Boolean {
+            clientList?.forEach {
+               if (id == it.accountNumber.toString()) return true
+            }
+        return false
+    }
+
+
+    /**
      * Update the balance for various types of operations.
      */
     fun updateBalance(userToTransfer: String?, user: Account, value: Long, operationType: String): Boolean {
@@ -182,7 +183,7 @@ object AccountsManager {
 
         when (operationType ) {
             "Deposit" -> {
-                user.balance = user.balance.plus(newValue)
+                user.deposit(newValue)
                 updateUser(applicationContext(), user)
                 return true
             }
@@ -200,8 +201,7 @@ object AccountsManager {
                     val formatter = SimpleDateFormat("dd/MM", Locale.getDefault())
                     val finalDate = formatter.format(date)
 
-                    // Make transactions.
-                    user.balance = user.balance.minus(newValue)
+                    user.deposit(newValue)
                     receivingUser?.balance = receivingUser?.balance?.plus(newValue) ?: throw Exception("A user is needed.")
 
                     // Transferring user.
@@ -221,8 +221,7 @@ object AccountsManager {
                     false
 
                 } else {
-                    user.balance = user.balance.minus(newValue)
-                    //binding.currencyAmount.text = getBalanceString(user)
+                    user.withdraw(newValue)
                     updateUser(applicationContext(), user)
                     true
                 }
@@ -235,7 +234,7 @@ object AccountsManager {
      */
     private fun addTransaction(id: String, transferType: String, name: String, amount: Long, date: String) {
         // Get the unique csv file name.
-        val filePath = composeTransactionCsvPath(id)
+        val filePath = createTransactionCsvPath(id)
         val newAmount = amount * 100
 
         val fileWriter = FileWriter(filePath, true)
@@ -253,7 +252,7 @@ object AccountsManager {
 
         return transactionList.also { list ->
             // Get the user specific transaction csv.
-            val filePath = composeTransactionCsvPath(id)
+            val filePath = createTransactionCsvPath(id)
 
             if (!filePath.exists()) {
                 return null
@@ -271,12 +270,6 @@ object AccountsManager {
             transactionList = list
         }
     }
-
-    private fun composeTransactionCsvPath(id: String): File {
-        val fileName = "$id.csv"
-        return File(applicationContext().cacheDir, fileName)
-    }
-
 
     /**
      * Retrieve the user, this is needed to authenticate
@@ -381,6 +374,11 @@ object AccountsManager {
      */
     fun delay(delay: Long = 1500, action: () -> Unit) {
         Handler(Looper.getMainLooper()).postDelayed(action, delay)
+    }
+
+    private fun createTransactionCsvPath(id: String): File {
+        val fileName = "$id.csv"
+        return File(applicationContext().cacheDir, fileName)
     }
 
     /**

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alexparra.bankaccountapp.databinding.FragmentTransactionBinding
-import com.alexparra.bankaccountapp.model.CustomAdapter
+import com.alexparra.bankaccountapp.adapters.CustomAdapter
 import com.alexparra.bankaccountapp.objects.AccountsManager
 
 class TransactionFragment : Fragment() {
