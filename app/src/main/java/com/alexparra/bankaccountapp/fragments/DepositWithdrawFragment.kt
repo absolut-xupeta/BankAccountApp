@@ -1,4 +1,4 @@
-package com.alexparra.bankaccountapp
+package com.alexparra.bankaccountapp.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.databinding.FragmentDepositWithdrawBinding
 
 const val VALUE = "VALUE"

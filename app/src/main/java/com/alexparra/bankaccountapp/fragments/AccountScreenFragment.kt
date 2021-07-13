@@ -1,4 +1,4 @@
-package com.alexparra.bankaccountapp
+package com.alexparra.bankaccountapp.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,15 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.adapters.ServicesAdapter
 import com.alexparra.bankaccountapp.databinding.FragmentAccountBinding
 import com.alexparra.bankaccountapp.model.CurrentAccount
 import com.alexparra.bankaccountapp.objects.AccountsManager
 import com.alexparra.bankaccountapp.objects.AccountsManager.formatMoneyBalance
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 import java.text.DateFormat
 
 const val TRANSACTION = "TRANSACTION"
@@ -102,6 +103,8 @@ class AccountScreenFragment : Fragment() {
             accountType.text = if (args.user is CurrentAccount) "Current Account" else "Savings Account"
             currencyAmount.text = formatMoneyBalance(args.user.balance)
             creationDate.text = finalDate.toString()
+
+            //NavigationBarView.OnItemSelectedListener()
 
             val list = ArrayList<String>()
             list.add("deposit")

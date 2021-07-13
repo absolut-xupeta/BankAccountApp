@@ -3,7 +3,7 @@
     package="com.alexparra.bankaccountapp">
 
     <application
-        android:name="com.alexparra.bankaccountapp.MainApplication"
+        android:name=".MainApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_bank"
         android:label="@string/app_name"

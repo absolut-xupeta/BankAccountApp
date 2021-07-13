@@ -60,6 +60,19 @@
     <string name="grid_transaction">Transaction</string>
     <string name="grid_investments">Investments</string>
 
+    <!-- Nav graph labels -->
+    <string name="nav_login">Login</string>
+    <string name="nav_create_account">Create Account</string>
+    <string name="nav_services">Services</string>
+    <string name="nav_deposit">Deposit</string>
+    <string name="nav_withdraw">Withdraw</string>
+    <string name="nav_transfer">Transfer</string>
+    <string name="nav_transactions">Transactions</string>
+
+    <!-- Bottom navigation -->
+    <string name="services">Services</string>
+    <string name="tic_tac_toe">Tic Tac Toe</string>
+
     <!-- Transaction -->
     <string name="no_transaction">No transactions made yet.</string>
 </resources>

@@ -41,7 +41,6 @@ class ServicesAdapter(
                     }
 
                     "transaction" -> {
-
                         actionName.text = root.context.getString(R.string.grid_transaction)
                         actionImage.setImageResource(R.drawable.ic_transaction)
                     }

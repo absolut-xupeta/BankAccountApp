@@ -3,15 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.alexparra.bankaccountapp.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash">
+        <action
+            android:id="@+id/action_splashFragment_to_accountScreenFragment"
+            app:destination="@id/accountScreenFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.alexparra.bankaccountapp.LoginFragment"
-        android:label="Login"
-        tools:layout="@layout/fragment_login"
+        android:name="com.alexparra.bankaccountapp.fragments.LoginFragment"
+        android:label="@string/nav_login"
+        app:defaultNavHost="true"
         app:graph="@navigation/nav_graph"
-        app:defaultNavHost="true">
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_createAccountFragment"
             app:destination="@id/createAccountFragment" />
@@ -22,14 +39,14 @@
 
     <fragment
         android:id="@+id/createAccountFragment"
-        android:name="com.alexparra.bankaccountapp.CreateAccountFragment"
-        android:label="CreateAccount"
+        android:name="com.alexparra.bankaccountapp.fragments.CreateAccountFragment"
+        android:label="@string/nav_create_account"
         tools:layout="@layout/fragment_create_account" />
 
     <fragment
         android:id="@+id/accountScreenFragment"
-        android:name="com.alexparra.bankaccountapp.AccountScreenFragment"
-        android:label="CreateAccount"
+        android:name="com.alexparra.bankaccountapp.fragments.AccountScreenFragment"
+        android:label="@string/nav_services"
         tools:layout="@layout/fragment_account">
         <action
             android:id="@+id/action_accountScreenFragment_to_depositWithdrawFragment"
@@ -47,25 +64,26 @@
 
     <fragment
         android:id="@+id/depositWithdrawFragment"
-        android:name="com.alexparra.bankaccountapp.DepositWithdrawFragment"
-        android:label="CreateAccount"
-        tools:layout="@layout/fragment_deposit_withdraw" >
+        android:name="com.alexparra.bankaccountapp.fragments.DepositWithdrawFragment"
+        tools:layout="@layout/fragment_deposit_withdraw">
         <argument
             android:name="operation"
             app:argType="string" />
     </fragment>
+
     <fragment
         android:id="@+id/transferFragment"
-        android:name="com.alexparra.bankaccountapp.TransferFragment"
-        android:label="fragment_transfer"
+        android:name="com.alexparra.bankaccountapp.fragments.TransferFragment"
+        android:label="@string/nav_transfer"
         tools:layout="@layout/fragment_transfer" />
     <fragment
         android:id="@+id/transactionFragment"
-        android:name="com.alexparra.bankaccountapp.TransactionFragment"
-        android:label="fragment_transaction"
-        tools:layout="@layout/fragment_transaction" >
+        android:name="com.alexparra.bankaccountapp.fragments.TransactionFragment"
+        android:label="@string/nav_transactions"
+        tools:layout="@layout/fragment_transaction">
         <argument
             android:name="id"
             app:argType="string" />
     </fragment>
+
 </navigation>

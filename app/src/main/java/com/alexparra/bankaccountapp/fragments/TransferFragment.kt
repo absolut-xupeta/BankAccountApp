@@ -1,4 +1,4 @@
-package com.alexparra.bankaccountapp
+package com.alexparra.bankaccountapp.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
+import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.databinding.FragmentTransferBinding
 import com.alexparra.bankaccountapp.objects.AccountsManager
 
