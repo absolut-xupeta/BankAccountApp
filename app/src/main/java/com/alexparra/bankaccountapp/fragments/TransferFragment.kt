@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.databinding.FragmentTransferBinding
@@ -18,6 +19,10 @@ const val ID = "ID"
 class TransferFragment : Fragment() {
 
     private lateinit var binding: FragmentTransferBinding
+
+    private val navController: NavController by lazy {
+        findNavController()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +58,7 @@ class TransferFragment : Fragment() {
                             TRANSACTION,
                             bundleOf(VALUE to transferAmount, OPERATION to "Transfer", ID to idToTransfer)
                         )
-                        findNavController().popBackStack()
+                        navController.popBackStack()
 
                     } else {
                         Toast.makeText(requireContext(), R.string.account_missing, Toast.LENGTH_LONG).show()

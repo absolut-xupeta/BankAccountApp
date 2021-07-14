@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.databinding.FragmentCreateAccountBinding
@@ -15,6 +16,10 @@ import java.util.*
 class CreateAccountFragment : Fragment() {
 
     private lateinit var binding: FragmentCreateAccountBinding
+
+    private val navController: NavController by lazy {
+        findNavController()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,7 +85,7 @@ class CreateAccountFragment : Fragment() {
                     if (result) {
                         Toast.makeText(context, R.string.create_account_success, Toast.LENGTH_SHORT).show()
                         AccountsManager.delay {
-                            findNavController().popBackStack()
+                            navController.popBackStack()
                         }
                     } else {
                         Toast.makeText(context, R.string.same_account_type, Toast.LENGTH_LONG).show()

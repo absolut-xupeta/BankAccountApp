@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,8 +18,6 @@ import com.alexparra.bankaccountapp.databinding.FragmentAccountBinding
 import com.alexparra.bankaccountapp.model.CurrentAccount
 import com.alexparra.bankaccountapp.objects.AccountsManager
 import com.alexparra.bankaccountapp.objects.AccountsManager.formatMoneyBalance
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationBarView
 import java.text.DateFormat
 
 const val TRANSACTION = "TRANSACTION"
@@ -28,6 +27,10 @@ class AccountScreenFragment : Fragment() {
     private val args: AccountScreenFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentAccountBinding
+
+    private val navController: NavController by lazy {
+        findNavController()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -112,6 +115,7 @@ class AccountScreenFragment : Fragment() {
             list.add("transfer")
             list.add("transaction")
             list.add("investments")
+            list.add("tictactoe")
 
             val recyclerViewList: RecyclerView = binding.accountRecycler
             val servicesAdapter = ServicesAdapter(list) {
@@ -120,7 +124,7 @@ class AccountScreenFragment : Fragment() {
                         val action = AccountScreenFragmentDirections
                             .actionAccountScreenFragmentToDepositWithdrawFragment("Deposit")
 
-                        findNavController().navigate(action)
+                        navController.navigate(action)
                     }
 
 
@@ -128,15 +132,16 @@ class AccountScreenFragment : Fragment() {
                         val action = AccountScreenFragmentDirections
                             .actionAccountScreenFragmentToDepositWithdrawFragment("Withdraw")
 
-                        findNavController().navigate(action)
+                        navController.navigate(action)
                     }
 
 
                     "transfer" -> {
                         val action = AccountScreenFragmentDirections
+
                             .actionAccountScreenFragmentToTransferFragment()
 
-                        findNavController().navigate(action)
+                        navController.navigate(action)
                     }
 
 
@@ -144,12 +149,13 @@ class AccountScreenFragment : Fragment() {
                         val action = AccountScreenFragmentDirections
                             .actionAccountScreenFragmentToTransactionFragment(args.user.accountNumber.toString())
 
-                        findNavController().navigate(action)
+                        navController.navigate(action)
                     }
 
-                    "logout" -> {
-                        AccountsManager.clearSession()
-                        findNavController().popBackStack()
+                    "tictactoe" -> {
+                        val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToTicTacToeFragment()
+
+                        navController.navigate(action)
                     }
                 }
             }
@@ -163,7 +169,8 @@ class AccountScreenFragment : Fragment() {
             logoutButton.setOnClickListener {
                 AccountsManager.clearSession()
 
-                findNavController().popBackStack()
+                val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToSplashFragment()
+                navController.navigate(action)
             }
         }
     }

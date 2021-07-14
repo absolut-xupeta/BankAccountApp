@@ -53,6 +53,11 @@ class ServicesAdapter(
                         warning.visibility = View.VISIBLE
                         warning.text = root.context.getString(R.string.soon_warning)
                     }
+
+                    "tictactoe" -> {
+                        actionName.text = root.context.getString(R.string.tic_tac_toe)
+                        actionImage.setImageResource(R.drawable.ic_tic_tac_toe)
+                    }
                 }
 
                 operationView.setOnClickListener {

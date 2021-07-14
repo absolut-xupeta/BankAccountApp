@@ -60,6 +60,12 @@
         <action
             android:id="@+id/action_accountScreenFragment_to_transactionFragment"
             app:destination="@id/transactionFragment" />
+        <action
+            android:id="@+id/action_accountScreenFragment_to_splashFragment"
+            app:destination="@id/splashFragment" />
+        <action
+            android:id="@+id/action_accountScreenFragment_to_ticTacToeFragment"
+            app:destination="@id/ticTacToeFragment" />
     </fragment>
 
     <fragment
@@ -85,5 +91,10 @@
             android:name="id"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/ticTacToeFragment"
+        android:name="com.alexparra.bankaccountapp.fragments.TicTacToeFragment"
+        android:label="fragment_tic_tac_toe"
+        tools:layout="@layout/fragment_tic_tac_toe" />
 
 </navigation>

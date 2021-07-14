@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.alexparra.bankaccountapp.R
@@ -21,6 +22,10 @@ class DepositWithdrawFragment : Fragment() {
     private val args: DepositWithdrawFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentDepositWithdrawBinding
+
+    private val navController: NavController by lazy {
+        findNavController()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,7 +61,7 @@ class DepositWithdrawFragment : Fragment() {
                         TRANSACTION,
                         bundleOf(VALUE to operationAmount.text.toString(), OPERATION to operationType)
                     )
-                    findNavController().popBackStack()
+                    navController.popBackStack()
                 }
             }
         }
