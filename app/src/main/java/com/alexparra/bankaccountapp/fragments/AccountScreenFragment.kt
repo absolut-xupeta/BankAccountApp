@@ -115,7 +115,7 @@ class AccountScreenFragment : Fragment() {
             list.add("transfer")
             list.add("transaction")
             list.add("investments")
-            list.add("tictactoe")
+            list.add("ticTacToe")
 
             val recyclerViewList: RecyclerView = binding.accountRecycler
             val servicesAdapter = ServicesAdapter(list) {
@@ -127,14 +127,12 @@ class AccountScreenFragment : Fragment() {
                         navController.navigate(action)
                     }
 
-
                     "withdraw" -> {
                         val action = AccountScreenFragmentDirections
                             .actionAccountScreenFragmentToDepositWithdrawFragment("Withdraw")
 
                         navController.navigate(action)
                     }
-
 
                     "transfer" -> {
                         val action = AccountScreenFragmentDirections
@@ -144,7 +142,6 @@ class AccountScreenFragment : Fragment() {
                         navController.navigate(action)
                     }
 
-
                     "transaction" -> {
                         val action = AccountScreenFragmentDirections
                             .actionAccountScreenFragmentToTransactionFragment(args.user.accountNumber.toString())
@@ -152,7 +149,7 @@ class AccountScreenFragment : Fragment() {
                         navController.navigate(action)
                     }
 
-                    "tictactoe" -> {
+                    "ticTacToe" -> {
                         val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToTicTacToeFragment()
 
                         navController.navigate(action)

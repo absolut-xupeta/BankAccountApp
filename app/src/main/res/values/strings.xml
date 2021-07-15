@@ -73,8 +73,12 @@
     <string name="services">Services</string>
     <string name="tic_tac_toe">Tic Tac Toe</string>
 
+    <!-- Tic Tac Toe -->
+    <string name="player1_round">Player 1</string>
+    <string name="player2_round">Player 2</string>
+    <string name="machine_round">Machine</string>
+    <string name="round">round</string>
+
     <!-- Transaction -->
     <string name="no_transaction">No transactions made yet.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
