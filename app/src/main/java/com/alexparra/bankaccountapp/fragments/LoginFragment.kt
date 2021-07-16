@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.databinding.FragmentLoginBinding
 import com.alexparra.bankaccountapp.objects.AccountsManager
+import com.alexparra.bankaccountapp.utils.toast
 
 class LoginFragment : Fragment() {
 
@@ -42,17 +42,11 @@ class LoginFragment : Fragment() {
             loginButton.setOnClickListener {
                 when {
                     accountNumberField.text.toString() == "" -> {
-                        Toast.makeText(
-                            context,
-                            getString(R.string.account_number_missing),
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
+                        toast(getString(R.string.account_number_missing))
                     }
 
                     passwordField.text.toString() == "" -> {
-                        Toast.makeText(context, getString(R.string.password_missing), Toast.LENGTH_SHORT)
-                            .show()
+                        toast(getString(R.string.password_missing))
                     }
 
                     else -> {
@@ -79,8 +73,7 @@ class LoginFragment : Fragment() {
 
                             } else {
                                 changeButtonState(false)
-                                Toast.makeText(context, getString(R.string.login_error), Toast.LENGTH_LONG)
-                                    .show()
+                                toast(getString(R.string.login_error))
                             }
                         }
                     }

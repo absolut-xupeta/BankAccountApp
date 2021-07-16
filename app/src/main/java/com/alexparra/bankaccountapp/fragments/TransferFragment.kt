@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.databinding.FragmentTransferBinding
 import com.alexparra.bankaccountapp.objects.AccountsManager
+import com.alexparra.bankaccountapp.utils.toast
 
 const val ID = "ID"
 
@@ -43,9 +44,9 @@ class TransferFragment : Fragment() {
 
         binding.confirmOperationButton.setOnClickListener {
             when {
-                binding.accountId.text.toString() == "" -> Toast.makeText(requireContext(), R.string.no_id_warning, Toast.LENGTH_LONG).show()
+                binding.accountId.text.toString() == "" -> toast(getString(R.string.no_id_warning))
 
-                binding.transferAmount.text.toString() == "" -> Toast.makeText(requireContext(), R.string.transfer_amount_zero, Toast.LENGTH_LONG).show()
+                binding.transferAmount.text.toString() == "" -> toast(getString(R.string.transfer_amount_zero))
 
                 else -> {
                     val idToTransfer = binding.accountId.text.toString()
@@ -61,7 +62,7 @@ class TransferFragment : Fragment() {
                         navController.popBackStack()
 
                     } else {
-                        Toast.makeText(requireContext(), R.string.account_missing, Toast.LENGTH_LONG).show()
+                        toast(getString(R.string.account_missing))
                     }
                 }
             }

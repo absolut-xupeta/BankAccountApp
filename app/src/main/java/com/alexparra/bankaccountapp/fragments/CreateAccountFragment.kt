@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.databinding.FragmentCreateAccountBinding
 import com.alexparra.bankaccountapp.objects.AccountsManager
+import com.alexparra.bankaccountapp.utils.toast
 import java.util.*
 
 class CreateAccountFragment : Fragment() {
@@ -83,12 +84,14 @@ class CreateAccountFragment : Fragment() {
 
                     // Go back to the login screen.
                     if (result) {
-                        Toast.makeText(context, R.string.create_account_success, Toast.LENGTH_SHORT).show()
+                        toast(getString( R.string.create_account_success))
+
                         AccountsManager.delay {
                             navController.popBackStack()
                         }
                     } else {
-                        Toast.makeText(context, R.string.same_account_type, Toast.LENGTH_LONG).show()
+                        toast(getString(R.string.same_account_type))
+
                         changeButtonState(false)
                     }
                 }

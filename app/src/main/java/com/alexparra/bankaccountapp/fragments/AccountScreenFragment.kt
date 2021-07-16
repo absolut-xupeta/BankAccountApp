@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.NavController
@@ -18,6 +17,7 @@ import com.alexparra.bankaccountapp.databinding.FragmentAccountBinding
 import com.alexparra.bankaccountapp.model.CurrentAccount
 import com.alexparra.bankaccountapp.objects.AccountsManager
 import com.alexparra.bankaccountapp.objects.AccountsManager.formatMoneyBalance
+import com.alexparra.bankaccountapp.utils.toast
 import java.text.DateFormat
 
 const val TRANSACTION = "TRANSACTION"
@@ -55,26 +55,26 @@ class AccountScreenFragment : Fragment() {
             if (result) {
                 when (operation) {
                     "Deposit" -> {
-                        Toast.makeText(context, R.string.deposit_complete, Toast.LENGTH_LONG).show()
+                        toast(getString(R.string.deposit_complete))
                         updateBalanceView("Deposit")
                     }
 
                     "Withdraw" -> {
-                        Toast.makeText(context, R.string.withdraw_complete, Toast.LENGTH_LONG).show()
+                        toast(getString(R.string.withdraw_complete))
                         updateBalanceView("Withdraw")
                     }
 
                     else -> {
-                        Toast.makeText(context, R.string.transfer_complete, Toast.LENGTH_LONG).show()
+                        toast(getString(R.string.transfer_complete))
                         updateBalanceView("Transfer")
                     }
                 }
 
             } else {
                 if (operation == "Withdraw") {
-                    Toast.makeText(context, R.string.withdraw_error, Toast.LENGTH_LONG).show()
+                    toast(getString(R.string.withdraw_error))
                 } else {
-                    Toast.makeText(context, R.string.transfer_enough_amount, Toast.LENGTH_LONG).show()
+                    toast(getString(R.string.transfer_enough_amount))
                 }
             }
         }
@@ -136,7 +136,6 @@ class AccountScreenFragment : Fragment() {
 
                     "transfer" -> {
                         val action = AccountScreenFragmentDirections
-
                             .actionAccountScreenFragmentToTransferFragment()
 
                         navController.navigate(action)
@@ -161,7 +160,6 @@ class AccountScreenFragment : Fragment() {
                 adapter = servicesAdapter
                 layoutManager = GridLayoutManager(context, 2)
             }
-
 
             logoutButton.setOnClickListener {
                 AccountsManager.clearSession()

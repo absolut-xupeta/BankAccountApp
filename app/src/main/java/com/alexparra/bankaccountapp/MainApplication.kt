@@ -16,5 +16,4 @@ class MainApplication : Application() {
             return instance.applicationContext
         }
     }
-
 }

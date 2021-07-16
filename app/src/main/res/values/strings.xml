@@ -78,6 +78,10 @@
     <string name="player2_round">Player 2</string>
     <string name="machine_round">Machine</string>
     <string name="round">round</string>
+    <string name="x_wins">X WINS!</string>
+    <string name="o_wins">O WINS!</string>
+    <string name="draw">DRAW</string>
+    <string name="retry">Retry</string>
 
     <!-- Transaction -->
     <string name="no_transaction">No transactions made yet.</string>

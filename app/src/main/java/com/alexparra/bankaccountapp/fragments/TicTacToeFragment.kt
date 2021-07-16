@@ -13,10 +13,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.adapters.TicTacToeAdapter
 import com.alexparra.bankaccountapp.databinding.FragmentTicTacToeBinding
+import com.alexparra.bankaccountapp.objects.TicTacToeManager
+import com.alexparra.bankaccountapp.objects.TicTacToeManager.addToMatrix
+import com.alexparra.bankaccountapp.objects.TicTacToeManager.board
+import com.alexparra.bankaccountapp.objects.TicTacToeManager.gameEnd
+import com.alexparra.bankaccountapp.objects.TicTacToeManager.isBotRound
+import com.alexparra.bankaccountapp.objects.TicTacToeManager.matrix
+import com.alexparra.bankaccountapp.objects.TicTacToeManager.roundCount
+import com.google.android.material.snackbar.Snackbar
 
 class TicTacToeFragment : Fragment() {
 
     private lateinit var binding: FragmentTicTacToeBinding
+
+    private lateinit var ticTacToeAdapter: TicTacToeAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,71 +44,62 @@ class TicTacToeFragment : Fragment() {
     }
 
     private fun ticTacToe() {
-        TicTacToeAdapter.isBotRound = false
-        TicTacToeAdapter.counter = 1
-
-        val board = arrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9)
-
-        with(binding) {
-            roundButton.text = getString(R.string.player1_round)
-            roundButton.setTextColor(
-                getColor(
-                    activity as AppCompatActivity,
-                    R.color.player1
-                )
-            )
-
-            counter.text = TicTacToeAdapter.counter.toString()
-
-            val recyclerView: RecyclerView = recyclerView
+        TicTacToeManager.resetAll()
+        resetViews()
 
 
-            val ticTacToeAdapter = TicTacToeAdapter(board) {
-                counter.text = TicTacToeAdapter.counter.toString()
-
-                if (!TicTacToeAdapter.isBotRound) {
-
-                    roundButton.text = getString(R.string.player2_round)
-                    roundButton.setTextColor(
-                        getColor(
-                            activity as AppCompatActivity,
-                            R.color.player2
-                        )
-                    )
-
-                } else {
-                    roundButton.text = getString(R.string.player1_round)
-                    roundButton.setTextColor(
-                        getColor(
-                            activity as AppCompatActivity,
-                            R.color.player1
-                        )
-                    )
-                }
-
-                if (TicTacToeAdapter.counter > 5) {
-                    when(checkStatus()) {
-                        "X" -> Toast.makeText(context, "X WINS", Toast.LENGTH_LONG).show()
-                        "O" -> Toast.makeText(context, "X WINS", Toast.LENGTH_LONG).show()
-                        else -> Toast.makeText(context, "DRAW", Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
+        val recyclerView: RecyclerView = binding.recyclerView
 
 
+        ticTacToeAdapter = TicTacToeAdapter(board, ::onInteraction)
 
-            recyclerView.apply {
-                adapter = ticTacToeAdapter
-                layoutManager = GridLayoutManager(context, 3)
-            }
+        //ticTacToeAdapter.disableBoard()
 
-            // TODO MOVE THIS TO THE RESET VIEW FUNC
-            if (TicTacToeAdapter.counter == 9) TicTacToeAdapter.counter = 0
+        recyclerView.apply {
+            adapter = ticTacToeAdapter
+            layoutManager = GridLayoutManager(context, 3)
         }
+
+    }
+
+    private fun onInteraction(state: TicTacToeAdapter.CellState, pos: Int) {
+        // TODO call addToMatrix here
+
+        ticTacToeAdapter.apply {
+            val marker = if (isBotRound) TicTacToeAdapter.CellState.O else TicTacToeAdapter.CellState.X
+            markCell(pos, marker)
+            addToMatrix(pos, marker)
+        }
+
+//        counter.text = roundCount.toString()
+//
+//        if (isBotRound) {
+//
+//            roundButton.text = getString(R.string.player2_round)
+//            roundButton.setTextColor(
+//                getColor(
+//                    activity as AppCompatActivity,
+//                    R.color.player2
+//                )
+//            )
+//
+//        } else {
+//            roundButton.text = getString(R.string.player1_round)
+//            roundButton.setTextColor(
+//                getColor(
+//                    activity as AppCompatActivity,
+//                    R.color.player1
+//                )
+//            )
+//        }
+//
+//        if (roundCount > 5) {
+//            checkResult()
+//        }
     }
 
     private fun checkStatus(): String {
-        val matrix = TicTacToeAdapter.matrix
+        val matrix = matrix
         var result = "none"
 
         // Check row
@@ -107,10 +108,10 @@ class TicTacToeFragment : Fragment() {
                 if (i[j].isBlank()) {
                     continue@outer
                 } else {
-                    if (i.size < j+2) {
+                    if (i.size <= j + 2) {
                         continue@outer
                     } else {
-                        if (i[j] == i[j+1] && i[j] == i[j+2]) {
+                        if (i[j] == i[j + 1] && i[j] == i[j + 2]) {
                             result = i[j]
                             return result
                         } else {
@@ -122,9 +123,72 @@ class TicTacToeFragment : Fragment() {
         }
 
         // Check column
+        val pos = 0
+        column@ for (j in 0..2) {
+            if (matrix[pos][j].isBlank()) {
+                continue@column
+            } else {
+                if (matrix[pos][j] == matrix[pos + 1][j] && matrix[pos][j] == matrix[pos + 2][j]) {
+                    result = matrix[pos][j]
+                    return result
+                } else {
+                    continue@column
+                }
+            }
+        }
 
         // Check Transversal
+        if (matrix[pos][pos].isNotBlank() && matrix[pos + 2][pos + 2].isNotBlank()) {
+            if (matrix[pos][pos] == matrix[pos + 1][pos + 1] && matrix[pos][pos] == matrix[pos + 2][pos + 2]) {
+                result = matrix[pos][pos]
+                return result
+            }
 
-        return result
+            if (matrix[pos][pos + 2] == matrix[pos + 1][pos + 1] && matrix[pos][pos + 2] == matrix[pos + 2][pos]) {
+                result = matrix[pos][pos]
+                return result
+            }
+        }
+
+        return if (roundCount == 10) "Draw" else result
+    }
+
+    private fun checkResult() {
+        when (checkStatus()) {
+            // TODO CHANGE GAME STATE FOR ADAPTER
+            "X" -> {
+                gameEnd = true
+                Snackbar.make(view as View, getString(R.string.x_wins), Snackbar.LENGTH_LONG)
+                    .setAction("Retry") { ticTacToeAdapter.reset() }.show()
+                resetViews()
+            }
+
+            "O" -> {
+                gameEnd = true
+                resetViews()
+                Toast.makeText(context, getString(R.string.o_wins), Toast.LENGTH_LONG).show()
+            }
+
+            "Draw" -> {
+                gameEnd = true
+                resetViews()
+                Toast.makeText(context, getString(R.string.draw), Toast.LENGTH_LONG).show()
+            }
+
+            else -> gameEnd = false
+        }
+    }
+
+    private fun resetViews() {
+        with(binding) {
+            counter.text = "1"
+            roundButton.text = getString(R.string.player1_round)
+            roundButton.setTextColor(
+                getColor(
+                    activity as AppCompatActivity,
+                    R.color.player1
+                )
+            )
+        }
     }
 }
