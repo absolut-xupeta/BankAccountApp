@@ -35,38 +35,10 @@ class TicTacToeAdapter(
                     }
 
                     onClick.invoke(state, position)
-
-                    // TODO remove bellow
-
-//                    if (isBotRound) {
-//                        cellText.text = symbolO
-//
-//                        addToMatrix(id, symbolO)
-//                        roundCount += 1
-//
-//                        isBotRound = false
-//                        cellText.isClickable = false
-//
-//                        onClick.invoke(id)
-//                    } else {
-//                        cellText.text = symbolX
-//
-//
-//                        addToMatrix(id, symbolX)
-//                        roundCount += 1
-//
-//                        isBotRound = true
-//                        cellText.isClickable = false
-//
-//                        onClick.invoke(id)
-//                    }
                 }
             }
         }
     }
-//  0, 1, 2,
-//  3, 4, 5
-//  6, 7, 8
 
     fun markCell(pos: Int, state: CellState) {
         dataSet[pos] = state
@@ -74,14 +46,15 @@ class TicTacToeAdapter(
     }
 
     fun reset() {
+        TicTacToeManager.resetAll()
         dataSet = board
         notifyDataSetChanged()
-        TicTacToeManager.resetAll()
         clickable = true
+        isBoardEnabled(true)
     }
 
-    fun disableBoard() {
-        clickable = false
+    fun isBoardEnabled(flag: Boolean) {
+        clickable = flag
     }
 
     // Create new views (invoked by the layout manager)
