@@ -6,10 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.databinding.AccountViewBinding
+import com.alexparra.bankaccountapp.model.Services
 
 class ServicesAdapter(
-    private val dataSet: ArrayList<String>,
-    private val onClick: (String) -> Unit
+    private val dataSet: ArrayList<Services>,
+    private val onClick: (Services) -> Unit
 ) :
     RecyclerView.Adapter<ServicesAdapter.ViewHolder>() {
 
@@ -22,51 +23,25 @@ class ServicesAdapter(
     inner class ViewHolder(private val binding: AccountViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: String, onClick: (String) -> Unit) {
+        fun bind(service: Services) {
             with(binding) {
-                when (item) {
-                    "deposit" -> {
-                        actionName.text = root.context.getString(R.string.grid_deposit)
-                        actionImage.setImageResource(R.drawable.ic_deposit)
-                    }
 
-                    "withdraw" -> {
-                        actionName.text = root.context.getString(R.string.grid_withdraw)
-                        actionImage.setImageResource(R.drawable.ic_withdraw)
-                    }
+                actionName.text = service.text
+                actionImage.setImageResource(service.image)
 
-                    "transfer" -> {
-                        actionName.text = root.context.getString(R.string.grid_transfer)
-                        actionImage.setImageResource(R.drawable.ic_transfer)
-                    }
-
-                    "transaction" -> {
-                        actionName.text = root.context.getString(R.string.grid_transaction)
-                        actionImage.setImageResource(R.drawable.ic_transaction)
-                    }
-
-                    "investments" -> {
-                        operationView.isClickable = false
-                        operationView.isFocusable = false
-                        actionName.text = root.context.getString(R.string.grid_investments)
-                        actionImage.setImageResource(R.drawable.ic_investments)
-                        warning.visibility = View.VISIBLE
-                        warning.text = root.context.getString(R.string.soon_warning)
-                    }
-
-                    "ticTacToe" -> {
-                        actionName.text = root.context.getString(R.string.tic_tac_toe)
-                        actionImage.setImageResource(R.drawable.ic_tic_tac_toe)
-                    }
+                if (service.soon) {
+                    operationView.isClickable = false
+                    operationView.isFocusable = false
+                    warning.visibility = View.VISIBLE
+                    warning.text = root.context.getString(R.string.soon_warning)
                 }
 
                 operationView.setOnClickListener {
-                    onClick.invoke(item)
+                    onClick.invoke(service)
                 }
             }
         }
     }
-
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -79,12 +54,10 @@ class ServicesAdapter(
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val info = dataSet[position]
 
-        viewHolder.bind(info, onClick)
+        viewHolder.bind(dataSet[position])
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = dataSet.size
-
 }
