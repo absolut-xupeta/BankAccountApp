@@ -1,5 +1,6 @@
 package com.alexparra.bankaccountapp.fragments
 
+import android.content.ContentResolver
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.adapters.ServicesAdapter
 import com.alexparra.bankaccountapp.databinding.FragmentAccountBinding
 import com.alexparra.bankaccountapp.model.CurrentAccount
+import com.alexparra.bankaccountapp.model.Services
 import com.alexparra.bankaccountapp.objects.AccountsManager
 import com.alexparra.bankaccountapp.objects.AccountsManager.formatMoneyBalance
 import com.alexparra.bankaccountapp.utils.toast
@@ -100,61 +102,20 @@ class AccountScreenFragment : Fragment() {
         val userFinalName = args.user.ownerName.split(' ')
             .joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() } }
 
-        binding.apply {
+        with(binding) {
             // Transform values to better visualization.
             bankUserName.text = userFinalName
-            accountType.text = if (args.user is CurrentAccount) "Current Account" else "Savings Account"
+            accountType.text =
+                if (args.user is CurrentAccount) "Current Account" else "Savings Account"
             currencyAmount.text = formatMoneyBalance(args.user.balance)
             creationDate.text = finalDate.toString()
 
-            //NavigationBarView.OnItemSelectedListener()
+            val list = getServices()
 
-            val list = ArrayList<String>()
-            list.add("deposit")
-            list.add("withdraw")
-            list.add("transfer")
-            list.add("transaction")
-            list.add("investments")
-            list.add("ticTacToe")
 
             val recyclerViewList: RecyclerView = binding.accountRecycler
-            val servicesAdapter = ServicesAdapter(list) {
-                when (it) {
-                    "deposit" -> {
-                        val action = AccountScreenFragmentDirections
-                            .actionAccountScreenFragmentToDepositWithdrawFragment("Deposit")
 
-                        navController.navigate(action)
-                    }
-
-                    "withdraw" -> {
-                        val action = AccountScreenFragmentDirections
-                            .actionAccountScreenFragmentToDepositWithdrawFragment("Withdraw")
-
-                        navController.navigate(action)
-                    }
-
-                    "transfer" -> {
-                        val action = AccountScreenFragmentDirections
-                            .actionAccountScreenFragmentToTransferFragment()
-
-                        navController.navigate(action)
-                    }
-
-                    "transaction" -> {
-                        val action = AccountScreenFragmentDirections
-                            .actionAccountScreenFragmentToTransactionFragment(args.user.accountNumber.toString())
-
-                        navController.navigate(action)
-                    }
-
-                    "ticTacToe" -> {
-                        val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToTicTacToeFragment()
-
-                        navController.navigate(action)
-                    }
-                }
-            }
+            val servicesAdapter = ServicesAdapter(list, ::handleAdapter)
 
             recyclerViewList.apply {
                 adapter = servicesAdapter
@@ -164,15 +125,56 @@ class AccountScreenFragment : Fragment() {
             logoutButton.setOnClickListener {
                 AccountsManager.clearSession()
 
-                val action = AccountScreenFragmentDirections.actionAccountScreenFragmentToSplashFragment()
+                val action =
+                    AccountScreenFragmentDirections.actionAccountScreenFragmentToSplashFragment()
                 navController.navigate(action)
             }
         }
     }
 
+    private fun handleAdapter(service: Services) {
+        when (service.text) {
+            "Deposit" -> {
+                val action = AccountScreenFragmentDirections
+                    .actionAccountScreenFragmentToDepositWithdrawFragment("Deposit")
+
+                navController.navigate(action)
+            }
+
+            "Withdraw" -> {
+                val action = AccountScreenFragmentDirections
+                    .actionAccountScreenFragmentToDepositWithdrawFragment("Withdraw")
+
+                navController.navigate(action)
+            }
+
+            "Transfer" -> {
+                val action = AccountScreenFragmentDirections
+                    .actionAccountScreenFragmentToTransferFragment()
+
+                navController.navigate(action)
+            }
+
+            "Transaction" -> {
+                val action = AccountScreenFragmentDirections
+                    .actionAccountScreenFragmentToTransactionFragment(args.user.accountNumber.toString())
+
+                navController.navigate(action)
+            }
+
+            "Tic Tac Toe" -> {
+                val action =
+                    AccountScreenFragmentDirections.actionAccountScreenFragmentToTicTacToeFragment()
+
+                navController.navigate(action)
+            }
+
+        }
+    }
+
     /**
      * Update the screen TextView balance display based on the last operation that
-     * take place with this account.
+     * took place with this account.
      */
     private fun updateBalanceView(operation: String) {
 
@@ -181,5 +183,20 @@ class AccountScreenFragment : Fragment() {
         } else {
             binding.currencyAmount.text = formatMoneyBalance(args.user.balance)
         }
+    }
+
+    private fun getServices(): ArrayList<Services> {
+        val list = ArrayList<Services>()
+
+        ContentResolver.getCurrentSyncs()
+
+        list.add(Services(getString(R.string.grid_deposit), R.drawable.ic_deposit))
+        list.add(Services(getString(R.string.grid_withdraw), R.drawable.ic_withdraw))
+        list.add(Services(getString(R.string.grid_transfer), R.drawable.ic_transfer))
+        list.add(Services(getString(R.string.grid_transaction), R.drawable.ic_transaction))
+        list.add(Services(getString(R.string.grid_investments), R.drawable.ic_investments))
+        list.add(Services(getString(R.string.tic_tac_toe), R.drawable.ic_tic_tac_toe))
+
+        return list
     }
 }
