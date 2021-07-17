@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alexparra.bankaccountapp.databinding.TicTacToeViewBinding
 import com.alexparra.bankaccountapp.objects.TicTacToeManager
 import com.alexparra.bankaccountapp.objects.TicTacToeManager.board
-import com.alexparra.bankaccountapp.objects.TicTacToeManager.matrix
 
 class TicTacToeAdapter(
     private var dataSet: Array<CellState>,
