@@ -14,9 +14,7 @@ import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.adapters.TicTacToeAdapter
 import com.alexparra.bankaccountapp.databinding.FragmentTicTacToeBinding
 import com.alexparra.bankaccountapp.objects.TicTacToeManager
-import com.alexparra.bankaccountapp.objects.TicTacToeManager.addToMatrix
 import com.alexparra.bankaccountapp.objects.TicTacToeManager.board
-import com.alexparra.bankaccountapp.objects.TicTacToeManager.gameEnd
 import com.alexparra.bankaccountapp.objects.TicTacToeManager.isBotRound
 import com.alexparra.bankaccountapp.objects.TicTacToeManager.matrix
 import com.alexparra.bankaccountapp.objects.TicTacToeManager.roundCount
@@ -44,16 +42,12 @@ class TicTacToeFragment : Fragment() {
     }
 
     private fun ticTacToe() {
-        TicTacToeManager.resetAll()
+        ticTacToeAdapter.reset()
         resetViews()
-
 
         val recyclerView: RecyclerView = binding.recyclerView
 
-
         ticTacToeAdapter = TicTacToeAdapter(board, ::onInteraction)
-
-        //ticTacToeAdapter.disableBoard()
 
         recyclerView.apply {
             adapter = ticTacToeAdapter
@@ -63,45 +57,51 @@ class TicTacToeFragment : Fragment() {
     }
 
     private fun onInteraction(state: TicTacToeAdapter.CellState, pos: Int) {
-        // TODO call addToMatrix here
+        ticTacToeAdapter.isBoardEnabled(true)
 
         ticTacToeAdapter.apply {
-            val marker = if (isBotRound) TicTacToeAdapter.CellState.O else TicTacToeAdapter.CellState.X
-            markCell(pos, marker)
-            addToMatrix(pos, marker)
-        }
+            val marker =
+                if (isBotRound) TicTacToeAdapter.CellState.O else TicTacToeAdapter.CellState.X
 
-//        counter.text = roundCount.toString()
-//
-//        if (isBotRound) {
-//
-//            roundButton.text = getString(R.string.player2_round)
-//            roundButton.setTextColor(
-//                getColor(
-//                    activity as AppCompatActivity,
-//                    R.color.player2
-//                )
-//            )
-//
-//        } else {
-//            roundButton.text = getString(R.string.player1_round)
-//            roundButton.setTextColor(
-//                getColor(
-//                    activity as AppCompatActivity,
-//                    R.color.player1
-//                )
-//            )
-//        }
-//
-//        if (roundCount > 5) {
-//            checkResult()
-//        }
+            markCell(pos, marker)
+
+            updateScreen(marker)
+
+            isBotRound = !isBotRound
+
+            if(roundCount > 5) checkResult()
+        }
+    }
+
+    private fun checkResult() {
+        when (checkStatus()) {
+            "X" -> {
+                ticTacToeAdapter.isBoardEnabled(false)
+                Snackbar.make(view as View, getString(R.string.x_wins), Snackbar.LENGTH_LONG)
+                    .setAction("Retry") { ticTacToeAdapter.reset() }.show()
+                resetViews()
+
+            }
+
+            "O" -> {
+                ticTacToeAdapter.isBoardEnabled(false)
+                resetViews()
+                Toast.makeText(context, getString(R.string.o_wins), Toast.LENGTH_LONG).show()
+            }
+
+            "Draw" -> {
+                ticTacToeAdapter.isBoardEnabled(false)
+                resetViews()
+                Toast.makeText(context, getString(R.string.draw), Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun checkStatus(): String {
         val matrix = matrix
         var result = "none"
 
+        // TODO CHANGE TO BOARD
         // Check row
         outer@ for (i in matrix) {
             inner@ for (j in i.indices) {
@@ -153,29 +153,28 @@ class TicTacToeFragment : Fragment() {
         return if (roundCount == 10) "Draw" else result
     }
 
-    private fun checkResult() {
-        when (checkStatus()) {
-            // TODO CHANGE GAME STATE FOR ADAPTER
-            "X" -> {
-                gameEnd = true
-                Snackbar.make(view as View, getString(R.string.x_wins), Snackbar.LENGTH_LONG)
-                    .setAction("Retry") { ticTacToeAdapter.reset() }.show()
-                resetViews()
-            }
 
-            "O" -> {
-                gameEnd = true
-                resetViews()
-                Toast.makeText(context, getString(R.string.o_wins), Toast.LENGTH_LONG).show()
-            }
+    private fun updateScreen(marker: TicTacToeAdapter.CellState) {
+        with(binding) {
+            counter.text = roundCount.toString()
 
-            "Draw" -> {
-                gameEnd = true
-                resetViews()
-                Toast.makeText(context, getString(R.string.draw), Toast.LENGTH_LONG).show()
+            if (marker == TicTacToeAdapter.CellState.O) {
+                roundButton.text = getString(R.string.player2_round)
+                roundButton.setTextColor(
+                    getColor(
+                        activity as AppCompatActivity,
+                        R.color.player2
+                    )
+                )
+            } else {
+                roundButton.text = getString(R.string.player1_round)
+                roundButton.setTextColor(
+                    getColor(
+                        activity as AppCompatActivity,
+                        R.color.player1
+                    )
+                )
             }
-
-            else -> gameEnd = false
         }
     }
 
