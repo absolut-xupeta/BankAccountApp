@@ -1,4 +1,7 @@
 package com.alexparra.bankaccountapp.model
 
-class Services {
-}
+data class Services(
+    val text: String,
+    val image: Int,
+    val soon: Boolean = false
+)
