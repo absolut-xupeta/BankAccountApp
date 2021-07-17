@@ -13,10 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alexparra.bankaccountapp.R
 import com.alexparra.bankaccountapp.adapters.TicTacToeAdapter
 import com.alexparra.bankaccountapp.databinding.FragmentTicTacToeBinding
-import com.alexparra.bankaccountapp.objects.TicTacToeManager
 import com.alexparra.bankaccountapp.objects.TicTacToeManager.board
 import com.alexparra.bankaccountapp.objects.TicTacToeManager.isBotRound
-import com.alexparra.bankaccountapp.objects.TicTacToeManager.matrix
 import com.alexparra.bankaccountapp.objects.TicTacToeManager.roundCount
 import com.google.android.material.snackbar.Snackbar
 
