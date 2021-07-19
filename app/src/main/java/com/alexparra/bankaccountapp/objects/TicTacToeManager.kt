@@ -61,7 +61,7 @@ object TicTacToeManager {
             }
         }
 
-        return if (roundCount == 10) GameStatus.DRAW else  GameStatus.IN_PROGRESS
+        return if (roundCount == 10) GameStatus.DRAW else GameStatus.IN_PROGRESS
     }
 
     enum class GameStatus {
