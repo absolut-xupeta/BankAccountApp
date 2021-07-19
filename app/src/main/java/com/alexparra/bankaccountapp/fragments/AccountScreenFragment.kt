@@ -1,6 +1,5 @@
 package com.alexparra.bankaccountapp.fragments
 
-import android.content.ContentResolver
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -112,7 +111,6 @@ class AccountScreenFragment : Fragment() {
 
             val list = getServices()
 
-
             val recyclerViewList: RecyclerView = binding.accountRecycler
 
             val servicesAdapter = ServicesAdapter(list, ::handleAdapter)
@@ -188,13 +186,11 @@ class AccountScreenFragment : Fragment() {
     private fun getServices(): ArrayList<Services> {
         val list = ArrayList<Services>()
 
-        ContentResolver.getCurrentSyncs()
-
         list.add(Services(getString(R.string.grid_deposit), R.drawable.ic_deposit))
         list.add(Services(getString(R.string.grid_withdraw), R.drawable.ic_withdraw))
         list.add(Services(getString(R.string.grid_transfer), R.drawable.ic_transfer))
         list.add(Services(getString(R.string.grid_transaction), R.drawable.ic_transaction))
-        list.add(Services(getString(R.string.grid_investments), R.drawable.ic_investments))
+        list.add(Services(getString(R.string.grid_investments), R.drawable.ic_investments, true))
         list.add(Services(getString(R.string.tic_tac_toe), R.drawable.ic_tic_tac_toe))
 
         return list
