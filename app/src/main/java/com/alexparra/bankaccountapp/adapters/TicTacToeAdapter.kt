@@ -26,7 +26,11 @@ class TicTacToeAdapter(
         fun bind(state: CellState, position: Int) {
             with(binding) {
 
-                cellText.text = ""
+                cellText.text = when (state) {
+                    CellState.X -> "X"
+                    CellState.O -> "O"
+                    else -> ""
+                }
 
                 cellText.setOnClickListener {
                     if (!clickable || state != CellState.NONE) {
