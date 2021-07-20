@@ -15,6 +15,7 @@ import java.io.FileWriter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.random.Random.Default.nextLong
 
 object AccountsManager {
 
@@ -30,14 +31,38 @@ object AccountsManager {
      * Format money to 'R$'.
      */
     fun formatMoneyTransaction(value: Long): String {
-        return "R$%.2f".format(value/100f)
+        return "R$%.2f".format(value / 100f)
     }
 
     /**
      * Format money.
      */
     fun formatMoneyBalance(value: Long): String {
-        return "%.2f".format(value/100f)
+        return "%.2f".format(value / 100f)
+    }
+
+    fun createTenThousandAccounts() {
+        val accounts = arrayOf(SAVINGS, CURRENT)
+        var count = 0
+
+        repeat(10_000) {
+            val name = randomName(count)
+            count++
+
+            createAccount(
+                applicationContext(),
+                accounts.random(),
+                generateAccountNumber(applicationContext()),
+                "12",
+                name,
+                Calendar.getInstance().timeInMillis.toString(),
+                nextLong(10000L)
+            )
+        }
+    }
+
+    private fun randomName(number: Int): String {
+        return "Nome $number"
     }
 
     /**
@@ -168,9 +193,9 @@ object AccountsManager {
      * Search if the provided id exists in the clientList.
      */
     fun searchUser(id: String): Boolean {
-            clientList?.forEach {
-               if (id == it.accountNumber.toString()) return true
-            }
+        clientList?.forEach {
+            if (id == it.accountNumber.toString()) return true
+        }
         return false
     }
 
@@ -181,7 +206,7 @@ object AccountsManager {
     fun updateBalance(userToTransfer: String?, user: Account, value: Long, operationType: String): Boolean {
         val newValue = value * 100
 
-        when (operationType ) {
+        when (operationType) {
             "Deposit" -> {
                 user.deposit(newValue)
                 updateUser(applicationContext(), user)
