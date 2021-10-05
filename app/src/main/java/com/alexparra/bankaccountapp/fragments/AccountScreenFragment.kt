@@ -24,7 +24,6 @@ import java.text.DateFormat
 const val TRANSACTION = "TRANSACTION"
 
 class AccountScreenFragment : Fragment() {
-
     private val args: AccountScreenFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentAccountBinding

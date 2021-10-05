@@ -15,7 +15,6 @@ import com.alexparra.bankaccountapp.utils.toast
 import java.util.*
 
 class CreateAccountFragment : Fragment() {
-
     private lateinit var binding: FragmentCreateAccountBinding
 
     private val navController: NavController by lazy {

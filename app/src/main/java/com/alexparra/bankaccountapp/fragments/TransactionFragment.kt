@@ -14,7 +14,6 @@ import com.alexparra.bankaccountapp.adapters.CustomAdapter
 import com.alexparra.bankaccountapp.objects.AccountsManager
 
 class TransactionFragment : Fragment() {
-
     private val args: TransactionFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentTransactionBinding

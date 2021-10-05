@@ -21,7 +21,6 @@ import com.google.android.material.snackbar.Snackbar
 import java.lang.Exception
 
 class TicTacToeFragment : Fragment() {
-
     private lateinit var binding: FragmentTicTacToeBinding
 
     private lateinit var ticTacToeAdapter: TicTacToeAdapter

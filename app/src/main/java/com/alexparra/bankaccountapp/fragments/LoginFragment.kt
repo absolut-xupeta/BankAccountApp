@@ -13,7 +13,6 @@ import com.alexparra.bankaccountapp.objects.AccountsManager
 import com.alexparra.bankaccountapp.utils.toast
 
 class LoginFragment : Fragment() {
-
     private lateinit var binding: FragmentLoginBinding
 
     private val navController: NavController by lazy {

@@ -18,7 +18,6 @@ const val VALUE = "VALUE"
 const val OPERATION = "OPERATION"
 
 class DepositWithdrawFragment : Fragment() {
-
     private val args: DepositWithdrawFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentDepositWithdrawBinding
